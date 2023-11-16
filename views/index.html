@@ -1,0 +1,9 @@
+{{ define "content" }}
+<form hx-get="/search" hx-params="q" hx-push-url="true" hx-target="closest main">
+    <label>
+        Search query:
+        <input name="q" />
+    </label>
+    <button>Search</button>
+</form>
+{{ end }}

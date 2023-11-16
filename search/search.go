@@ -20,7 +20,7 @@ func Search(query string, providers []Provider) []Course {
 		go func(provider Provider, results *[]Course) {
 			defer wg.Done()
 
-			providerResults, _ := provider.Search("java")
+			providerResults, _ := provider.Search(query)
 
 			mu.Lock()
 			*results = append(*results, providerResults...)
