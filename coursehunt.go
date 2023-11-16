@@ -19,8 +19,8 @@ func main() {
 		},
 	}
 
-	indexPage, _ := makeInheritedTemplate("views/index.html")
-	searchPage, _ := makeInheritedTemplate("views/search.html")
+	indexPage, _ := makeHtmxTemplate("views/index.html")
+	searchPage, _ := makeHtmxTemplate("views/search.html")
 
 	r := chi.NewRouter()
 
@@ -39,22 +39,14 @@ func main() {
 	http.ListenAndServe(":1641", r)
 }
 
-func makeInheritedTemplate(file string) (*template.Template, error) {
+func makeHtmxTemplate(file string) (*template.Template, error) {
 	return template.New("").ParseFiles(file, "views/base.html")
 }
 
 func serveHtmx(r *http.Request, w http.ResponseWriter, tmpl *template.Template, data any) {
 	if r.Header.Get("HX-Request") == "true" {
-		executeInheritedTemplateContent(w, tmpl, data)
+		tmpl.ExecuteTemplate(w, "base", data)
 	} else {
-		executeInheritedTemplate(w, tmpl, data)
+		tmpl.ExecuteTemplate(w, "content", data)
 	}
-}
-
-func executeInheritedTemplate(wr io.Writer, tmpl *template.Template, data any) {
-	tmpl.ExecuteTemplate(wr, "base", data)
-}
-
-func executeInheritedTemplateContent(wr io.Writer, tmpl *template.Template, data any) {
-	tmpl.ExecuteTemplate(wr, "content", data)
 }
