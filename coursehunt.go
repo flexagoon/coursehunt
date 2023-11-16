@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"html/template"
-	"io"
 	"net/http"
 
 	"fxgn.dev/coursehunt/search"
