@@ -44,8 +44,8 @@ func makeHtmxTemplate(file string) (*template.Template, error) {
 
 func serveHtmx(r *http.Request, w http.ResponseWriter, tmpl *template.Template, data any) {
 	if r.Header.Get("HX-Request") == "true" {
-		tmpl.ExecuteTemplate(w, "base", data)
-	} else {
 		tmpl.ExecuteTemplate(w, "content", data)
+	} else {
+		tmpl.ExecuteTemplate(w, "base", data)
 	}
 }
