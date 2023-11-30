@@ -11,7 +11,8 @@ type Udemy struct {
 }
 
 type udemyCourse struct {
-	Title string `json:"title"`
+	Title   string `json:"title"`
+	UrlPart string `json:"url"`
 }
 
 func (udemy Udemy) Search(query string) ([]Course, error) {
@@ -40,6 +41,7 @@ func (udemy Udemy) Search(query string) ([]Course, error) {
 	for _, course := range response.Results {
 		courses = append(courses, Course{
 			Name: course.Title,
+			Url:  "https://www.udemy.com" + course.UrlPart,
 		})
 	}
 
