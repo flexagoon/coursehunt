@@ -1,4 +1,8 @@
 {{ define "content" }}
+<div class="headings">
+    <h1>CourseHunt 📚🔍</h1>
+    <h2>Find your knowledge</h2>
+</div>
 <form hx-get="/search" hx-params="q" hx-push-url="true" hx-target="closest main">
     <label>
         Search query:
@@ -6,4 +10,12 @@
     </label>
     <button>Search <span aria-busy="true" class="htmx-indicator"></span></button>
 </form>
+<hr>
+<hgroup>
+    <h3>Supported sites:</h3>
+    <ul>
+        <li>Udemy</li>
+        <li>Stepik</li>
+    </ul>
+</hgroup>
 {{ end }}
