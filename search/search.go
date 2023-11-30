@@ -10,6 +10,7 @@ type Course struct {
 	Name        string
 	Url         string
 	Description string
+	Price       string
 }
 
 func Search(query string, providers []Provider) []Course {

@@ -16,6 +16,7 @@ type stepikCourse struct {
 	Title   string `json:"title"`
 	Url     string `json:"canonical_url"`
 	Summary string `json:"summary"`
+	Price   string `json:"price"`
 }
 
 func (stepik Stepik) Search(query string) ([]Course, error) {
@@ -66,6 +67,7 @@ func fetchCourses(ids []int) ([]Course, error) {
 			Name:        course.Title,
 			Url:         course.Url,
 			Description: course.Summary,
+			Price:       course.Price + "₽",
 		})
 	}
 

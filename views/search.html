@@ -5,7 +5,7 @@
 </form>
 {{ range . }}
 <div>
-    <a href={{ .Url }}>{{ .Name }}</a>
+    <a href={{ .Url }}>{{ .Name }}</a> <kbd>{{ .Price }}</kbd>
     <p><small>{{ .Description }}</small></p>
 </div>
 {{ end }}

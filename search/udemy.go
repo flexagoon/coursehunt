@@ -14,6 +14,7 @@ type udemyCourse struct {
 	Title    string `json:"title"`
 	UrlPart  string `json:"url"`
 	Headline string `json:"headline"`
+	Price    string `json:"price"`
 }
 
 func (udemy Udemy) Search(query string) ([]Course, error) {
@@ -44,6 +45,7 @@ func (udemy Udemy) Search(query string) ([]Course, error) {
 			Name:        course.Title,
 			Url:         "https://www.udemy.com" + course.UrlPart,
 			Description: course.Headline,
+			Price:       course.Price,
 		})
 	}
 
