@@ -63,11 +63,18 @@ func fetchCourses(ids []int) ([]Course, error) {
 
 	var courses []Course
 	for _, course := range response.Results {
+		var price string
+		if course.Price != "" {
+			price = course.Price + "₽"
+		} else {
+			price = "Free"
+		}
+
 		courses = append(courses, Course{
 			Name:        course.Title,
 			Url:         course.Url,
 			Description: course.Summary,
-			Price:       course.Price + "₽",
+			Price:       price,
 		})
 	}
 
