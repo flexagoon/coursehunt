@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"net/url"
 
 	"fxgn.dev/coursehunt/search"
 	"github.com/go-chi/chi/v5"
@@ -28,7 +29,7 @@ func main() {
 	})
 
 	r.Get("/search", func(w http.ResponseWriter, r *http.Request) {
-		query := r.URL.Query().Get("q")
+		query := url.QueryEscape(r.URL.Query().Get("q"))
 		fmt.Println(query)
 		results := search.Search(query, searchProviders)
 		fmt.Println(results)
