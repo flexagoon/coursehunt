@@ -8,6 +8,7 @@ type Provider interface {
 
 type Course struct {
 	Name string
+	Url  string
 }
 
 func Search(query string, providers []Provider) []Course {
