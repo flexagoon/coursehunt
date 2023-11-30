@@ -13,8 +13,9 @@ type searchResult struct {
 }
 
 type stepikCourse struct {
-	Title string `json:"title"`
-	Url   string `json:"canonical_url"`
+	Title   string `json:"title"`
+	Url     string `json:"canonical_url"`
+	Summary string `json:"summary"`
 }
 
 func (stepik Stepik) Search(query string) ([]Course, error) {
@@ -62,8 +63,9 @@ func fetchCourses(ids []int) ([]Course, error) {
 	var courses []Course
 	for _, course := range response.Results {
 		courses = append(courses, Course{
-			Name: course.Title,
-			Url:  course.Url,
+			Name:        course.Title,
+			Url:         course.Url,
+			Description: course.Summary,
 		})
 	}
 

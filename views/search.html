@@ -1,5 +1,8 @@
 {{ define "content" }}
 {{ range . }}
-<a href={{ .Url }}>{{ .Name }}</p>
+<div>
+    <a href={{ .Url }}>{{ .Name }}</a>
+    <p><small>{{ .Description }}</small></p>
+</div>
 {{ end }}
 {{ end }}
