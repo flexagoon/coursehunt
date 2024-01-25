@@ -3,6 +3,7 @@ package search
 import (
 	"encoding/json"
 	"net/http"
+	"net/url"
 )
 
 type Udemy struct {
@@ -18,7 +19,10 @@ type udemyCourse struct {
 }
 
 func (udemy Udemy) Search(query string, filter Filter) ([]Course, error) {
-	url := "https://www.udemy.com/api-2.0/courses/?search=" + query
+	url, err := udemy.builtSearchUrl(query, filter)
+	if err != nil {
+		return nil, err
+	}
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -50,4 +54,23 @@ func (udemy Udemy) Search(query string, filter Filter) ([]Course, error) {
 	}
 
 	return courses, nil
+}
+
+func (_ Udemy) builtSearchUrl(query string, filter Filter) (string, error) {
+	url, err := url.Parse("https://www.udemy.com/api-2.0/courses")
+	if err != nil {
+		return "", err
+	}
+
+	q := url.Query()
+
+	q.Set("search", query)
+
+	if filter.Price && filter.PriceRange[1] == 0 {
+		q.Set("price", "price-free")
+	}
+
+	url.RawQuery = q.Encode()
+
+	return url.String(), nil
 }
