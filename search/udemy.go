@@ -17,7 +17,7 @@ type udemyCourse struct {
 	Price    string `json:"price"`
 }
 
-func (udemy Udemy) Search(query string) ([]Course, error) {
+func (udemy Udemy) Search(query string, filter Filter) ([]Course, error) {
 	url := "https://www.udemy.com/api-2.0/courses/?search=" + query
 
 	req, err := http.NewRequest("GET", url, nil)

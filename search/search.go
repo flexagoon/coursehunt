@@ -3,7 +3,7 @@ package search
 import "sync"
 
 type Provider interface {
-	Search(query string) ([]Course, error)
+	Search(query string, filter Filter) ([]Course, error)
 }
 
 type Course struct {
@@ -13,7 +13,12 @@ type Course struct {
 	Price       string
 }
 
-func Search(query string, providers []Provider) []Course {
+type Filter struct {
+	Price      bool
+	PriceRange [2]int
+}
+
+func Search(query string, filter Filter, providers []Provider) []Course {
 	var wg sync.WaitGroup
 	var results []Course
 	var mu sync.Mutex
@@ -23,7 +28,7 @@ func Search(query string, providers []Provider) []Course {
 		go func(provider Provider, results *[]Course) {
 			defer wg.Done()
 
-			providerResults, _ := provider.Search(query)
+			providerResults, _ := provider.Search(query, filter)
 
 			mu.Lock()
 			*results = append(*results, providerResults...)

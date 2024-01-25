@@ -3,6 +3,7 @@ package search
 import (
 	"encoding/json"
 	"net/http"
+	"net/url"
 	"strconv"
 )
 
@@ -19,8 +20,12 @@ type stepikCourse struct {
 	Price   string `json:"price"`
 }
 
-func (stepik Stepik) Search(query string) ([]Course, error) {
-	url := "https://stepik.org/api/search-results?order=conversion_rate__none%2Crating__none%2Cquality__none%2Cpaid_weight__none&page=1&query=" + query
+func (stepik Stepik) Search(query string, filter Filter) ([]Course, error) {
+	url, err := buildSearchUrl(query, filter)
+	if err != nil {
+		return nil, err
+	}
+
 	httpResp, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -40,6 +45,26 @@ func (stepik Stepik) Search(query string) ([]Course, error) {
 	}
 
 	return fetchCourses(ids)
+}
+
+func buildSearchUrl(query string, filter Filter) (string, error) {
+	url, err := url.Parse("https://stepik.org/api/search-results?order=conversion_rate__none%2Crating__none%2Cquality__none%2Cpaid_weight__none&page=1")
+	if err != nil {
+		return "", err
+	}
+
+	q := url.Query()
+
+	q.Set("query", query)
+
+	if filter.Price {
+		q.Set("price__gte", strconv.Itoa(filter.PriceRange[0]))
+		q.Set("price__lte", strconv.Itoa(filter.PriceRange[1]))
+	}
+
+	url.RawQuery = q.Encode()
+
+	return url.String(), nil
 }
 
 func fetchCourses(ids []int) ([]Course, error) {

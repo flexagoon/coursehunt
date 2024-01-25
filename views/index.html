@@ -3,14 +3,18 @@
     <h1>CourseHunt 📚🔍</h1>
     <h2>Find your knowledge</h2>
 </div>
-<form hx-get="/search" hx-params="q" hx-push-url="true" hx-target="closest main">
+<form hx-get="/search" hx-params="q,free" hx-push-url="true" hx-target="closest main">
     <label>
         Search query:
         <input name="q" />
     </label>
+    <label>
+        <input type="checkbox" role="switch" name="free">
+        Only free courses
+    </label>
+    <br>
     <button>Search <span aria-busy="true" class="htmx-indicator"></span></button>
 </form>
-<hr>
 <hgroup>
     <h3>Supported sites:</h3>
     <ul>

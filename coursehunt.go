@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
+	"math"
 	"net/http"
 	"net/url"
 
@@ -30,9 +30,17 @@ func main() {
 
 	r.Get("/search", func(w http.ResponseWriter, r *http.Request) {
 		query := url.QueryEscape(r.URL.Query().Get("q"))
-		fmt.Println(query)
-		results := search.Search(query, searchProviders)
-		fmt.Println(results)
+
+		filter := search.Filter{}
+
+		filter.PriceRange = [2]int{0, math.MaxInt}
+		free := r.URL.Query().Get("free")
+		if free == "on" {
+			filter.Price = true
+			filter.PriceRange = [2]int{0, 0}
+		}
+
+		results := search.Search(query, filter, searchProviders)
 		serveHtmx(r, w, searchPage, results)
 	})
 
