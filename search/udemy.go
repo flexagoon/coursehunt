@@ -19,7 +19,7 @@ type udemyCourse struct {
 }
 
 func (udemy Udemy) Search(query string, filter Filter) ([]Course, error) {
-	url, err := udemy.builtSearchUrl(query, filter)
+	url, err := udemy.buildSearchUrl(query, filter)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func (udemy Udemy) Search(query string, filter Filter) ([]Course, error) {
 	return courses, nil
 }
 
-func (_ Udemy) builtSearchUrl(query string, filter Filter) (string, error) {
+func (_ Udemy) buildSearchUrl(query string, filter Filter) (string, error) {
 	url, err := url.Parse("https://www.udemy.com/api-2.0/courses")
 	if err != nil {
 		return "", err
