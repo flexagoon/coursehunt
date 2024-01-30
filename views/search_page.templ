@@ -1,0 +1,24 @@
+package views
+
+import "fxgn.dev/coursehunt/search"
+
+templ SearchPage(results []search.Course) {
+	<div class="headings">
+		<h1>CourseHunt 📚🔍</h1>
+		<h2>Find your knowledge</h2>
+	</div>
+	<form class="grid" hx-get="/search" hx-params="q" hx-push-url="true" hx-target="closest main">
+		<input name="q" placeholder="Search query"/>
+		<button>Search <span aria-busy="true" class="htmx-indicator"></span></button>
+	</form>
+	for _, course := range results {
+		@searchResult(course)
+	}
+}
+
+templ searchResult(course search.Course) {
+	<div>
+		<a href={ templ.URL(course.Url) }>{ course.Name }</a> <mark>{ course.Price }</mark>
+		<p><small>{ course.Description }</small></p>
+	</div>
+}
