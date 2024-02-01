@@ -57,9 +57,8 @@ func (_ Stepik) buildSearchUrl(query string, filter Filter) (string, error) {
 
 	q.Set("query", query)
 
-	if filter.Price {
-		q.Set("price__gte", strconv.Itoa(filter.PriceRange[0]))
-		q.Set("price__lte", strconv.Itoa(filter.PriceRange[1]))
+	if filter.Free {
+		q.Set("is_paid", "false")
 	}
 
 	url.RawQuery = q.Encode()

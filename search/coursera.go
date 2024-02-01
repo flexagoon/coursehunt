@@ -74,7 +74,7 @@ func (coursera Coursera) Search(query string, filter Filter) ([]Course, error) {
 		if course.Free {
 			price = "Free"
 		} else {
-			if filter.Price && filter.PriceRange[1] == 0 {
+			if filter.Free {
 				continue
 			}
 			price = "Subscription required"

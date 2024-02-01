@@ -14,8 +14,7 @@ type Course struct {
 }
 
 type Filter struct {
-	Price      bool
-	PriceRange [2]int
+	Free bool
 }
 
 func Search(query string, filter Filter, providers []Provider) []Course {

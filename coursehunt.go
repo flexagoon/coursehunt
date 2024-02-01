@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"math"
 	"net/http"
 	"net/url"
 
@@ -35,11 +34,9 @@ func main() {
 
 		filter := search.Filter{}
 
-		filter.PriceRange = [2]int{0, math.MaxInt}
 		free := r.URL.Query().Get("free")
 		if free == "on" {
-			filter.Price = true
-			filter.PriceRange = [2]int{0, 0}
+			filter.Free = true
 		}
 
 		results := search.Search(query, filter, searchProviders)

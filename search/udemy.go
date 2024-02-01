@@ -66,7 +66,7 @@ func (_ Udemy) buildSearchUrl(query string, filter Filter) (string, error) {
 
 	q.Set("search", query)
 
-	if filter.Price && filter.PriceRange[1] == 0 {
+	if filter.Free {
 		q.Set("price", "price-free")
 	}
 
