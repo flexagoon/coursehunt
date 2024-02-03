@@ -70,6 +70,12 @@ func (_ Udemy) buildSearchUrl(query string, filter Filter) (string, error) {
 		q.Set("price", "price-free")
 	}
 
+	if filter.Language == LanguageEnglish {
+		q.Set("language", "en")
+	} else if filter.Language == LanguageRussian {
+		q.Set("language", "ru")
+	}
+
 	url.RawQuery = q.Encode()
 
 	return url.String(), nil

@@ -61,6 +61,12 @@ func (_ Stepik) buildSearchUrl(query string, filter Filter) (string, error) {
 		q.Set("is_paid", "false")
 	}
 
+	if filter.Language == LanguageEnglish {
+		q.Set("language", "en")
+	} else if filter.Language == LanguageRussian {
+		q.Set("language", "ru")
+	}
+
 	url.RawQuery = q.Encode()
 
 	return url.String(), nil

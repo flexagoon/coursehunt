@@ -30,13 +30,22 @@ func main() {
 	})
 
 	r.Get("/search", func(w http.ResponseWriter, r *http.Request) {
-		query := url.QueryEscape(r.URL.Query().Get("q"))
+		params := r.URL.Query()
+
+		query := url.QueryEscape(params.Get("q"))
 
 		filter := search.Filter{}
 
-		free := r.URL.Query().Get("free")
+		free := params.Get("free")
 		if free == "on" {
 			filter.Free = true
+		}
+
+		language := params.Get("language")
+		if language == "russian" {
+			filter.Language = search.LanguageRussian
+		} else if language == "english" {
+			filter.Language = search.LanguageEnglish
 		}
 
 		results := search.Search(query, filter, searchProviders)

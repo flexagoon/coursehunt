@@ -11,11 +11,14 @@ type Course struct {
 	Url         string
 	Description string
 	Price       string
+	Extra       []ExtraParam
 }
 
-type Filter struct {
-	Free bool
-}
+type ExtraParam int
+
+const (
+	Translated ExtraParam = iota
+)
 
 func Search(query string, filter Filter, providers []Provider) []Course {
 	var wg sync.WaitGroup

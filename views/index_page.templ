@@ -14,6 +14,14 @@ templ IndexPage() {
 			<input type="checkbox" role="switch" name="free"/>
 			Only free courses
 		</label>
+		<label>
+			Language
+			<select name="language">
+				<option value="any" selected>Any</option>
+				<option value="russian">Russian</option>
+				<option value="english">English</option>
+			</select>
+		</label>
 		<br/>
 		<button>Search <span aria-busy="true" class="htmx-indicator"></span></button>
 	</form>

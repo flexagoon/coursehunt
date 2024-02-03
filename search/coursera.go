@@ -34,7 +34,8 @@ const basePayload = `
         "entityType": "PRODUCTS",
         "query": "%s",
         "limit": 100,
-        "sortBy": "BEST_MATCH"
+        "sortBy": "BEST_MATCH",
+        "facetFilters": [ %s ]
       }
     ]
   }
@@ -55,7 +56,7 @@ type courseraCourse struct {
 
 func (coursera Coursera) Search(query string, filter Filter) ([]Course, error) {
 	url := "https://www.coursera.org/graphql-gateway?opname=Search"
-	payload := strings.NewReader(fmt.Sprintf(basePayload, query))
+	payload := buildGraphqlPayload(query, filter)
 
 	httpResp, err := http.Post(url, "application/json", payload)
 	if err != nil {
@@ -80,13 +81,33 @@ func (coursera Coursera) Search(query string, filter Filter) ([]Course, error) {
 			price = "Subscription required"
 		}
 
+		var extras []ExtraParam
+		if filter.Language == LanguageRussian {
+			extras = append(extras, Translated)
+		}
+
 		courses = append(courses, Course{
 			Name:        course.Name,
 			Url:         "https://www.coursera.org" + course.Url,
 			Description: "",
 			Price:       price,
+			Extra:       extras,
 		})
 	}
 
 	return courses, nil
+}
+
+func buildGraphqlPayload(query string, filter Filter) *strings.Reader {
+	filters := []string{}
+
+	if filter.Language == LanguageEnglish {
+		filters = append(filters, "language:English")
+	} else if filter.Language == LanguageRussian {
+		filters = append(filters, "language:Russian")
+	}
+
+	filtersJson, _ := json.Marshal(filters)
+
+	return strings.NewReader(fmt.Sprintf(basePayload, query, filtersJson))
 }
