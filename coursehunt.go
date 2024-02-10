@@ -8,7 +8,6 @@ import (
 	"fxgn.dev/coursehunt/search"
 	"fxgn.dev/coursehunt/views"
 	"github.com/a-h/templ"
-	"github.com/go-chi/chi/v5"
 )
 
 func main() {
@@ -23,13 +22,13 @@ func main() {
 
 	indexPage := views.IndexPage()
 
-	r := chi.NewRouter()
+	mux := http.NewServeMux()
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /{$}", func(w http.ResponseWriter, r *http.Request) {
 		serveHtmxPage(r, w, indexPage)
 	})
 
-	r.Get("/search", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /search", func(w http.ResponseWriter, r *http.Request) {
 		query := url.QueryEscape(r.FormValue("q"))
 
 		filter := search.Filter{}
@@ -50,7 +49,7 @@ func main() {
 		serveHtmxPage(r, w, views.SearchPage(results))
 	})
 
-	http.ListenAndServe(":1641", r)
+	http.ListenAndServe(":1641", mux)
 }
 
 func serveHtmxPage(r *http.Request, w http.ResponseWriter, component templ.Component) {
