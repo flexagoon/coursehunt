@@ -1,29 +1,29 @@
 package views
 
 templ IndexPage() {
-	<div class="headings">
+	<hgroup>
 		<h1>CourseHunt 📚🔍</h1>
 		<h2>Find your knowledge</h2>
-	</div>
+	</hgroup>
 	<form hx-get="/search" hx-push-url="true" hx-target="closest main">
-		<label>
-			Search query:
-			<input name="q"/>
-		</label>
-		<label>
-			<input type="checkbox" role="switch" name="free"/>
-			Only free courses
-		</label>
-		<label>
-			Language
-			<select name="language">
-				<option value="any" selected>Any</option>
-				<option value="russian">Russian</option>
-				<option value="english">English</option>
-			</select>
-		</label>
-		<br/>
-		<button>Search <span aria-busy="true" class="htmx-indicator"></span></button>
+		<fieldset role="search">
+			<input type="search" placeholder="Search query" name="q"/>
+			<button type="submit" data-loading-aria-busy>Search</button>
+		</fieldset>
+		<fieldset>
+			<label>
+				<input type="checkbox" role="switch" name="free"/>
+				Only free courses
+			</label>
+			<label>
+				Language
+				<select name="language">
+					<option value="any" selected>Any</option>
+					<option value="russian">Russian</option>
+					<option value="english">English</option>
+				</select>
+			</label>
+		</fieldset>
 	</form>
 	<hgroup>
 		<h3>Supported sites:</h3>

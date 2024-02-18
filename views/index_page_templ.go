@@ -23,7 +23,7 @@ func IndexPage() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"headings\"><h1>CourseHunt 📚🔍</h1><h2>Find your knowledge</h2></div><form hx-get=\"/search\" hx-push-url=\"true\" hx-target=\"closest main\"><label>Search query: <input name=\"q\"></label> <label><input type=\"checkbox\" role=\"switch\" name=\"free\"> Only free courses</label> <label>Language <select name=\"language\"><option value=\"any\" selected>Any</option> <option value=\"russian\">Russian</option> <option value=\"english\">English</option></select></label><br><button>Search <span aria-busy=\"true\" class=\"htmx-indicator\"></span></button></form><hgroup><h3>Supported sites:</h3><ul><li>Udemy</li><li>Stepik</li><li>Coursera</li></ul></hgroup>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<hgroup><h1>CourseHunt 📚🔍</h1><h2>Find your knowledge</h2></hgroup><form hx-get=\"/search\" hx-push-url=\"true\" hx-target=\"closest main\"><fieldset role=\"search\"><input type=\"search\" placeholder=\"Search query\" name=\"q\"> <button type=\"submit\" data-loading-aria-busy>Search</button></fieldset><fieldset><label><input type=\"checkbox\" role=\"switch\" name=\"free\"> Only free courses</label> <label>Language <select name=\"language\"><option value=\"any\" selected>Any</option> <option value=\"russian\">Russian</option> <option value=\"english\">English</option></select></label></fieldset></form><hgroup><h3>Supported sites:</h3><ul><li>Udemy</li><li>Stepik</li><li>Coursera</li></ul></hgroup>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

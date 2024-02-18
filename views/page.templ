@@ -7,12 +7,18 @@ templ Page(contents templ.Component) {
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>CourseHunt</title>
 			<script src="https://unpkg.com/htmx.org@1.9.4" integrity="sha384-zUfuhFKKZCbHTY6aRR46gxiqszMk5tcHjsVFxnUo8VMus4kHGVdIYVbOYYNlKmHV" crossorigin="anonymous"></script>
+			<script src="https://unpkg.com/htmx.org/dist/ext/loading-states.js"></script>
 			<link
 				rel="stylesheet"
-				href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+				href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
 			/>
+			<style>
+			  :root {
+				--pico-block-spacing-vertical: calc(var(--pico-spacing) * 3.5);
+			  }
+			</style>
 		</head>
-		<body>
+		<body hx-ext="loading-states">
 			<main class="container">
 				@contents
 			</main>
