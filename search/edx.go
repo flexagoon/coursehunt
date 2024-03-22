@@ -3,7 +3,6 @@ package search
 import (
 	"encoding/json"
 	"net/http"
-	"net/url"
 )
 
 type Edx struct{}
@@ -21,7 +20,7 @@ func (edx Edx) Search(query string, filter Filter) ([]Course, error) {
 		return []Course{}, nil
 	}
 
-	url := baseUrl + url.QueryEscape(query)
+	url := edxBaseUrl + query
 
 	httpResp, err := http.Get(url)
 	if err != nil {
