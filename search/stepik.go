@@ -44,7 +44,7 @@ func (stepik Stepik) Search(query string, filter Filter) ([]Course, error) {
 		ids = append(ids, result.Id)
 	}
 
-	return fetchCourses(ids)
+	return stepik.fetchCourses(ids)
 }
 
 func (_ Stepik) buildSearchUrl(query string, filter Filter) (string, error) {
@@ -72,7 +72,7 @@ func (_ Stepik) buildSearchUrl(query string, filter Filter) (string, error) {
 	return url.String(), nil
 }
 
-func fetchCourses(ids []int) ([]Course, error) {
+func (_ Stepik) fetchCourses(ids []int) ([]Course, error) {
 	url := "https://stepik.org/api/courses?ids[]=" + strconv.Itoa(ids[0])
 	for _, id := range ids[1:] {
 		url += "&ids[]=" + strconv.Itoa(id)

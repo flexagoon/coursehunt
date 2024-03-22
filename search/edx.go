@@ -13,7 +13,7 @@ type edxCourse struct {
 	Description string `json:"primary_description"`
 }
 
-const baseUrl = `https://igsyv1z1xi-dsn.algolia.net/1/indexes/product?x-algolia-application-id=IGSYV1Z1XI&x-algolia-api-key=1f72394b5b49fc876026952685f5defe&filters=(product:Course+AND+language:English)&attributesToRetrieve=["title","marketing_url","primary_description"]&attributesToHighlight=[]&query=`
+const edxBaseUrl = `https://igsyv1z1xi-dsn.algolia.net/1/indexes/product?x-algolia-application-id=IGSYV1Z1XI&x-algolia-api-key=1f72394b5b49fc876026952685f5defe&filters=(product:Course+AND+language:English)&attributesToRetrieve=["title","marketing_url","primary_description"]&attributesToHighlight=[]&query=`
 
 func (edx Edx) Search(query string, filter Filter) ([]Course, error) {
 	if filter.Language == LanguageRussian {

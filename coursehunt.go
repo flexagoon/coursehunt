@@ -19,6 +19,7 @@ func main() {
 		},
 		search.Coursera{},
 		search.Edx{},
+		search.Skillbox{},
 	}
 
 	indexPage := views.IndexPage()
