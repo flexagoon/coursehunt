@@ -76,6 +76,14 @@ func (_ Udemy) buildSearchUrl(query string, filter Filter) (string, error) {
 		q.Set("language", "ru")
 	}
 
+	if filter.Difficulty == DifficultyBeginner {
+		q.Set("instructional_level", "beginner")
+	} else if filter.Difficulty == DifficultyIntermediate {
+		q.Set("instructional_level", "intermediate")
+	} else if filter.Difficulty == DifficultyAdvanced {
+		q.Set("instructional_level", "expert")
+	}
+
 	url.RawQuery = q.Encode()
 
 	return url.String(), nil

@@ -2,7 +2,9 @@ package search
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"net/url"
 )
 
 type Alison struct{}
@@ -13,14 +15,15 @@ type alisonCourse struct {
 	Headline string `json:"headline"`
 }
 
-const alisonBaseUrl = `https://api.alison.com/v0.1/search?query=`
-
 func (alison Alison) Search(query string, filter Filter) ([]Course, error) {
 	if filter.Language == LanguageRussian {
 		return []Course{}, nil
 	}
 
-	url := alisonBaseUrl + query
+	url, err := alison.buildSearchUrl(query, filter)
+	if err != nil {
+		return nil, err
+	}
 
 	httpResp, err := http.Get(url)
 	if err != nil {
@@ -46,4 +49,25 @@ func (alison Alison) Search(query string, filter Filter) ([]Course, error) {
 	}
 
 	return courses, nil
+}
+
+const alisonBaseUrl = "https://api.alison.com/v0.1/search"
+
+func (alison Alison) buildSearchUrl(query string, filter Filter) (string, error) {
+	url, err := url.Parse(alisonBaseUrl)
+	if err != nil {
+		return "", err
+	}
+
+	q := url.Query()
+
+	q.Set("query", query)
+
+	if filter.Difficulty != DifficultyAny {
+		q.Set("level", fmt.Sprint(filter.Difficulty))
+	}
+
+	url.RawQuery = q.Encode()
+
+	return url.String(), nil
 }

@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
+	"strings"
 )
 
 type Skillbox struct{}
@@ -20,12 +22,15 @@ type terms struct {
 	Currency       string `json:"icon_currency"`
 }
 
-const skillboxCourseBaseUrl = "https://skillbox.ru/api/v6/ru/sales/skillbox/directions/all/nomenclature/course/search/?search="
-const skillboxProfessionBaseUrl = "https://skillbox.ru/api/v6/ru/sales/skillbox/directions/all/nomenclature/profession/search/?search="
-
 func (skillbox Skillbox) Search(query string, filter Filter) ([]Course, error) {
-	coursesUrl := skillboxCourseBaseUrl + query
-	professionsUrl := skillboxProfessionBaseUrl + query
+	if filter.Language == LanguageEnglish || filter.Difficulty == DifficultyIntermediate {
+		return []Course{}, nil
+	}
+
+	coursesUrl, professionsUrl, err := skillbox.buildSearchUrls(query, filter)
+	if err != nil {
+		return nil, err
+	}
 
 	courses, err := skillbox.fetchCourses(coursesUrl, filter)
 	if err != nil {
@@ -40,8 +45,31 @@ func (skillbox Skillbox) Search(query string, filter Filter) ([]Course, error) {
 	return slices.Concat(courses, professions), nil
 }
 
+func (skillbox Skillbox) buildSearchUrls(query string, filter Filter) (string, string, error) {
+	url, err := url.Parse("https://skillbox.ru/api/v6/ru/sales/skillbox/directions/all/nomenclature/course/search")
+	if err != nil {
+		return "", "", err
+	}
+
+	q := url.Query()
+
+	q.Set("search", query)
+
+	if filter.Difficulty == DifficultyBeginner {
+		q.Set("level", "for novichkov")
+	} else if filter.Difficulty == DifficultyAdvanced {
+		q.Set("level", "for specialists")
+	}
+
+	url.RawQuery = q.Encode()
+
+	courseUrl := url.String()
+	professionUrl := strings.Replace(courseUrl, "course", "profession", 1)
+
+	return courseUrl, professionUrl, nil
+}
+
 func (_ Skillbox) fetchCourses(url string, filter Filter) ([]Course, error) {
-	fmt.Println(url)
 	httpResp, err := http.Get(url)
 	if err != nil {
 		return nil, err

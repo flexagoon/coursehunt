@@ -67,6 +67,14 @@ func (_ Stepik) buildSearchUrl(query string, filter Filter) (string, error) {
 		q.Set("language", "ru")
 	}
 
+	if filter.Difficulty == DifficultyBeginner {
+		q.Set("difficulty[]", "easy")
+	} else if filter.Difficulty == DifficultyIntermediate {
+		q.Set("difficulty[]", "normal")
+	} else if filter.Difficulty == DifficultyAdvanced {
+		q.Set("difficulty[]", "hard")
+	}
+
 	url.RawQuery = q.Encode()
 
 	return url.String(), nil

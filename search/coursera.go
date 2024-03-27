@@ -107,6 +107,14 @@ func buildGraphqlPayload(query string, filter Filter) *strings.Reader {
 		filters = append(filters, "language:Russian")
 	}
 
+	if filter.Difficulty == DifficultyBeginner {
+		filters = append(filters, "productDifficultyLevel:Beginner")
+	} else if filter.Difficulty == DifficultyIntermediate {
+		filters = append(filters, "productDifficultyLevel:Intermediate")
+	} else if filter.Difficulty == DifficultyAdvanced {
+		filters = append(filters, "productDifficultyLevel:Advanced")
+	}
+
 	filtersJson, _ := json.Marshal(filters)
 
 	return strings.NewReader(fmt.Sprintf(basePayload, query, filtersJson))
