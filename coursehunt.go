@@ -48,6 +48,15 @@ func main() {
 			filter.Language = search.LanguageEnglish
 		}
 
+		difficulty := r.FormValue("difficulty")
+		if difficulty == "beginner" {
+			filter.Difficulty = search.DifficultyBeginner
+		} else if difficulty == "intermediate" {
+			filter.Difficulty = search.DifficultyIntermediate
+		} else if difficulty == "advanced" {
+			filter.Difficulty = search.DifficultyAdvanced
+		}
+
 		results := search.Search(query, filter, searchProviders)
 		serveHtmxPage(r, w, views.SearchPage(results))
 	})
