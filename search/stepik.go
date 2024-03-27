@@ -48,7 +48,7 @@ func (stepik Stepik) Search(query string, filter Filter) ([]Course, error) {
 }
 
 func (_ Stepik) buildSearchUrl(query string, filter Filter) (string, error) {
-	url, err := url.Parse("https://stepik.org/api/search-results?order=conversion_rate__none%2Crating__none%2Cquality__none%2Cpaid_weight__none&page=1")
+	url, err := url.Parse("https://stepik.org/api/search-results?order=conversion_rate__none%2Crating__none%2Cquality__none%2Cpaid_weight__none&is_popular=true&page=1")
 	if err != nil {
 		return "", err
 	}
