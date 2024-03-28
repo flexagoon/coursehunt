@@ -27,7 +27,7 @@ type gqlSearch struct {
 
 const basePayload = `
 {
-  "query": "query Search($requests: [Search_Request!]!) {SearchResult {search(requests: $requests) {elements {... on Search_ProductHit { name isCourseFree url skills productDuration productDifficultyLevel imageUrl avgProductRating productType}}}}}",
+  "query": "query Search($requests: [Search_Request!]!) {SearchResult {search(requests: $requests) {elements {... on Search_ProductHit { name partners url isCourseFree avgProductRating productDuration }}}}}",
   "variables": {
     "requests": [
       {
@@ -43,15 +43,22 @@ const basePayload = `
 `
 
 type courseraCourse struct {
-	Name       string   `json:"name"`
-	Free       bool     `json:"isCourseFree"`
-	Url        string   `json:"url"`
-	Skills     []string `json:"skills"`
-	Duration   string   `json:"productDuration"`
-	Difficulty string   `json:"productDifficultyLevel"`
-	ImageUrl   string   `json:"imageUrl"`
-	Rating     float64  `json:"avgProductRating"`
-	Type       string   `json:"productType"`
+	Name     string   `json:"name"`
+	Partners []string `json:"partners"`
+	Url      string   `json:"url"`
+	// TODO description
+	Free     bool    `json:"isCourseFree"`
+	Rating   float32 `json:"avgProductRating"`
+	Duration string  `json:"productDuration"`
+}
+
+var courseraDurations = map[string]string{
+	"LESS_THAN_TWO_HOURS":  "Less than 2 hours",
+	"ONE_TO_FOUR_WEEKS":    "1-4 weeks",
+	"ONE_TO_THREE_MONTHS":  "1-3 months",
+	"THREE_TO_SIX_MONTHS":  "3-6 months",
+	"SIX_TO_TWELVE_MONTHS": "6-12 months",
+	"ONE_TO_FOUR_YEARS":    "1-4 years",
 }
 
 func (coursera Coursera) Search(query string, filter Filter) ([]Course, error) {
@@ -87,11 +94,13 @@ func (coursera Coursera) Search(query string, filter Filter) ([]Course, error) {
 		}
 
 		courses = append(courses, Course{
-			Name:        course.Name,
-			Url:         "https://www.coursera.org" + course.Url,
-			Description: "",
-			Price:       price,
-			Extra:       extras,
+			Name:     course.Name,
+			Author:   strings.Join(course.Partners, ", "),
+			Url:      "https://www.coursera.org" + course.Url,
+			Price:    price,
+			Rating:   course.Rating,
+			Duration: courseraDurations[course.Duration],
+			Extra:    extras,
 		})
 	}
 

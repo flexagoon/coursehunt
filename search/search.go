@@ -8,9 +8,12 @@ type Provider interface {
 
 type Course struct {
 	Name        string
+	Author      string
 	Url         string
 	Description string
 	Price       string
+	Rating      float32
+	Duration    string
 	Extra       []ExtraParam
 }
 
@@ -18,6 +21,7 @@ type ExtraParam int
 
 const (
 	Translated ExtraParam = iota
+	Certificate
 )
 
 func Search(query string, filter Filter, providers []Provider) []Course {

@@ -12,14 +12,20 @@ import (
 type Skillbox struct{}
 
 type skillboxCourse struct {
-	Title string `json:"title"`
-	Href  string `json:"href"`
-	Terms terms  `json:"terms"`
+	Title string        `json:"title"`
+	Href  string        `json:"href"`
+	Terms skillboxTerms `json:"terms"`
 }
 
-type terms struct {
-	MonthlyPayment int    `json:"monthly_payment"`
-	Currency       string `json:"icon_currency"`
+type skillboxTerms struct {
+	MonthlyPayment int              `json:"monthly_payment"`
+	Currency       string           `json:"icon_currency"`
+	Duration       skillboxDuration `json:"duration"`
+}
+
+type skillboxDuration struct {
+	Count int    `json:"count"`
+	Label string `json:"label"`
 }
 
 func (skillbox Skillbox) Search(query string, filter Filter) ([]Course, error) {
@@ -99,6 +105,8 @@ func (_ Skillbox) fetchCourses(url string, filter Filter) ([]Course, error) {
 			Url:         course.Href,
 			Description: "",
 			Price:       price,
+			Duration:    fmt.Sprint(course.Terms.Duration.Count, " ", course.Terms.Duration.Label),
+			Extra:       []ExtraParam{Certificate},
 		})
 	}
 

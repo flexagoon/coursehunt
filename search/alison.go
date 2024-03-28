@@ -13,6 +13,7 @@ type alisonCourse struct {
 	Name     string `json:"name"`
 	Slug     string `json:"slug"`
 	Headline string `json:"headline"`
+	Duration string `json:"avg_duration"`
 }
 
 func (alison Alison) Search(query string, filter Filter) ([]Course, error) {
@@ -45,6 +46,8 @@ func (alison Alison) Search(query string, filter Filter) ([]Course, error) {
 			Url:         "https://alison.com/course/" + course.Slug,
 			Description: course.Headline,
 			Price:       "Free",
+			Duration:    fmt.Sprintf("%s hours", course.Duration),
+			Extra:       []ExtraParam{Certificate},
 		})
 	}
 

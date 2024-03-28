@@ -14,10 +14,13 @@ type searchResult struct {
 }
 
 type stepikCourse struct {
-	Title   string `json:"title"`
-	Url     string `json:"canonical_url"`
-	Summary string `json:"summary"`
-	Price   string `json:"price"`
+	// TODO stepik data structure sucks and I need to do extra fetching for
+	// other data
+	Title       string `json:"title"`
+	Url         string `json:"canonical_url"`
+	Summary     string `json:"summary"`
+	Price       string `json:"price"`
+	Certificate string `json:"certificate"`
 }
 
 func (stepik Stepik) Search(query string, filter Filter) ([]Course, error) {
@@ -108,11 +111,17 @@ func (_ Stepik) fetchCourses(ids []int) ([]Course, error) {
 			price = "Free"
 		}
 
+		var extras []ExtraParam
+		if course.Certificate != "" {
+			extras = append(extras, Certificate)
+		}
+
 		courses = append(courses, Course{
 			Name:        course.Title,
 			Url:         course.Url,
 			Description: course.Summary,
 			Price:       price,
+			Extra:       extras,
 		})
 	}
 

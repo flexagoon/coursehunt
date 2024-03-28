@@ -12,10 +12,17 @@ type Udemy struct {
 }
 
 type udemyCourse struct {
-	Title    string `json:"title"`
-	UrlPart  string `json:"url"`
-	Headline string `json:"headline"`
-	Price    string `json:"price"`
+	Title       string            `json:"title"`
+	UrlPart     string            `json:"url"`
+	Headline    string            `json:"headline"`
+	Price       string            `json:"price"`
+	Instructors []udemyInstructor `json:"visible_instructors"`
+	Duration    string            `json:"content_info_short"`
+	Rating      float32           `json:"avg_rating"`
+}
+
+type udemyInstructor struct {
+	Name string `json:"display_name"`
 }
 
 func (udemy Udemy) Search(query string, filter Filter) ([]Course, error) {
@@ -50,6 +57,10 @@ func (udemy Udemy) Search(query string, filter Filter) ([]Course, error) {
 			Url:         "https://www.udemy.com" + course.UrlPart,
 			Description: course.Headline,
 			Price:       course.Price,
+			Author:      course.Instructors[0].Name,
+			Duration:    course.Duration,
+			Rating:      course.Rating,
+			Extra:       []ExtraParam{Certificate},
 		})
 	}
 
@@ -57,7 +68,7 @@ func (udemy Udemy) Search(query string, filter Filter) ([]Course, error) {
 }
 
 func (_ Udemy) buildSearchUrl(query string, filter Filter) (string, error) {
-	url, err := url.Parse("https://www.udemy.com/api-2.0/courses")
+	url, err := url.Parse("https://www.udemy.com/api-2.0/courses?fields[course]=title,url,headline,price,visible_instructors,avg_rating,content_info_short&fields[user]=display_name")
 	if err != nil {
 		return "", err
 	}
