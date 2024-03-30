@@ -12,7 +12,7 @@ type Course struct {
 	Url         string
 	Description string
 	Price       string
-	Rating      float32
+	Rating      float64
 	Duration    string
 	Extra       []ExtraParam
 }

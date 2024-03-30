@@ -1,18 +1,15 @@
 package views
 
 import "fxgn.dev/coursehunt/search"
-import "strings"
+import "strconv"
 
 templ SearchPage(results []search.Course) {
-	<hgroup>
-		<h1>CourseHunt 📚🔍</h1>
-		<h2>Find your knowledge</h2>
-	</hgroup>
-	<form class="grid" hx-get="/search" hx-params="q" hx-push-url="true" hx-target="closest main">
-		<fieldset role="search">
-			<input type="search" placeholder="Search query" name="q"/>
-			<button type="submit" data-loading-aria-busy>Search</button>
-		</fieldset>
+	<form class="my-12" hx-get="/search" hx-push-url="true" hx-target="closest main">
+		@searchBar()
+		<details>
+			<summary class="text-2xl mt-3">Filters</summary>
+			@filters()
+		</details>
 	</form>
 	for _, course := range results {
 		@searchResult(course)
@@ -20,12 +17,11 @@ templ SearchPage(results []search.Course) {
 }
 
 templ searchResult(course search.Course) {
-	<div>
-		<p>
-			<a href={ templ.URL(course.Url) }>{ course.Name }</a> <mark>{ course.Price }</mark>
-			<br/>
-			<i>{ course.Author }</i> { strings.Repeat("⭐️", int(course.Rating)) } | { course.Duration }
-		</p>
-		<p><small>{ course.Description }</small></p>
-	</div>
+	<a class="block my-6 bg-surface rounded-xl border-2 border-highlightHigh p-5 hover:bg-highlightLow" href={ templ.URL(course.Url) }>
+		<span class="text-xl font-bold">{ course.Name }</span> <mark class="bg-foam/20 rounded-lg p-1 text-foam">{ course.Price }</mark>
+		<br/>
+		<span class="text-lg"><i>By { course.Author }</i> |  { strconv.FormatFloat(course.Rating, 'f', 1, 64) } ⭐ | { course.Duration }</span>
+		<br/>
+		<span class="text-muted">{ course.Description }</span>
+	</a>
 }

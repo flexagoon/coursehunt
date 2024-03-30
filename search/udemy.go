@@ -18,7 +18,7 @@ type udemyCourse struct {
 	Price       string            `json:"price"`
 	Instructors []udemyInstructor `json:"visible_instructors"`
 	Duration    string            `json:"content_info_short"`
-	Rating      float32           `json:"avg_rating"`
+	Rating      float64           `json:"avg_rating"`
 }
 
 type udemyInstructor struct {

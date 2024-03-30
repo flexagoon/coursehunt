@@ -61,6 +61,10 @@ func main() {
 		serveHtmxPage(r, w, views.SearchPage(results))
 	})
 
+	mux.HandleFunc("GET /style.css", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "views/style.css")
+	})
+
 	http.ListenAndServe(":1641", mux)
 }
 

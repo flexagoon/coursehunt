@@ -48,7 +48,7 @@ type courseraCourse struct {
 	Url      string   `json:"url"`
 	// TODO description
 	Free     bool    `json:"isCourseFree"`
-	Rating   float32 `json:"avgProductRating"`
+	Rating   float64 `json:"avgProductRating"`
 	Duration string  `json:"productDuration"`
 }
 

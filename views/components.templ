@@ -1,0 +1,50 @@
+package views
+
+templ searchBar() {
+	<fieldset role="search" class="flex">
+		<input class="w-4/5 px-5 py-2 rounded-l-xl bg-surface border-2 border-highlightHigh focus:outline-none" type="search" placeholder="Search query" name="q"/>
+		<button class="grow rounded-r-xl bg-highlightHigh group" type="submit" data-loading-aria-busy>
+			Search
+			<span class="hidden group-aria-busy:inline pr-1">
+				@spinner()
+			</span>
+		</button>
+	</fieldset>
+}
+
+templ spinner() {
+	// Taken from here:
+	// https://github.com/n3r4zzurr0/svg-spinners
+	<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="inline" fill="#575279">
+		<style>.spinner_qM83{animation:spinner_8HQG 1.05s infinite}.spinner_oXPr{animation-delay:.1s}.spinner_ZTLf{animation-delay:.2s}@keyframes spinner_8HQG{0%,57.14%{animation-timing-function:cubic-bezier(0.33,.66,.66,1);transform:translate(0)}28.57%{animation-timing-function:cubic-bezier(0.33,0,.66,.33);transform:translateY(-6px)}100%{transform:translate(0)}}</style>
+		<circle class="spinner_qM83" cx="4" cy="12" r="3"></circle>
+		<circle class="spinner_qM83 spinner_oXPr" cx="12" cy="12" r="3"></circle>
+		<circle class="spinner_qM83 spinner_ZTLf" cx="20" cy="12" r="3"></circle>
+	</svg>
+}
+
+templ filters() {
+	<fieldset class="mt-3 ml-3">
+		<label class="block text-xl">
+			<input type="checkbox" class="size-5 accent-highlightMed" role="switch" name="free"/>
+			Only free courses
+		</label>
+		<label class="block text-xl my-2">
+			Language
+			<select name="language" class="px-5 py-1 rounded bg-highlightMed">
+				<option value="any" selected>Any</option>
+				<option value="russian">Russian</option>
+				<option value="english">English</option>
+			</select>
+		</label>
+		<label class="block text-xl">
+			Difficulty
+			<select name="difficulty" class="px-5 py-1 rounded bg-highlightMed">
+				<option value="any" selected>Any</option>
+				<option value="beginner">Beginner</option>
+				<option value="intermediate">Intermediate</option>
+				<option value="advanced">Advanced</option>
+			</select>
+		</label>
+	</fieldset>
+}
