@@ -1,6 +1,7 @@
 package views
 
 import "fxgn.dev/coursehunt/search"
+import "strings"
 
 templ SearchPage(results []search.Course) {
 	<hgroup>
@@ -20,7 +21,11 @@ templ SearchPage(results []search.Course) {
 
 templ searchResult(course search.Course) {
 	<div>
-		<a href={ templ.URL(course.Url) }>{ course.Name }</a> <mark>{ course.Price }</mark>
+		<p>
+			<a href={ templ.URL(course.Url) }>{ course.Name }</a> <mark>{ course.Price }</mark>
+			<br/>
+			<i>{ course.Author }</i> { strings.Repeat("⭐️", int(course.Rating)) } | { course.Duration }
+		</p>
 		<p><small>{ course.Description }</small></p>
 	</div>
 }
