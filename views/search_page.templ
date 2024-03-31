@@ -19,6 +19,14 @@ templ SearchPage(results []search.Course) {
 templ searchResult(course search.Course) {
 	<a class="block my-6 bg-surface rounded-xl border-2 border-highlightHigh p-5 hover:bg-highlightLow" href={ templ.URL(course.Url) }>
 		<span class="text-xl font-bold">{ course.Name }</span> <mark class="bg-foam/20 rounded-lg p-1 text-foam">{ course.Price }</mark>
+		for _, extra := range course.Extra {
+			switch extra {
+				case search.Translated:
+					<mark class="bg-rose/20 rounded-lg p-1 text-rose">Translated</mark>&nbsp;
+				case search.Certificate:
+					<mark class="bg-iris/20 rounded-lg p-1 text-iris">Certificate</mark>
+			}
+		}
 		<br/>
 		<span class="text-lg"><i>By { course.Author }</i> |  { strconv.FormatFloat(course.Rating, 'f', 1, 64) } ⭐ | { course.Duration }</span>
 		<br/>

@@ -728,6 +728,14 @@ video {
   background-color: rgb(223 218 217 / var(--tw-bg-opacity));
 }
 
+.bg-iris\/20 {
+  background-color: rgb(144 122 169 / 0.2);
+}
+
+.bg-rose\/20 {
+  background-color: rgb(215 130 126 / 0.2);
+}
+
 .bg-surface {
   --tw-bg-opacity: 1;
   background-color: rgb(255 250 243 / var(--tw-bg-opacity));
@@ -798,9 +806,19 @@ video {
   color: rgb(86 148 159 / var(--tw-text-opacity));
 }
 
+.text-iris {
+  --tw-text-opacity: 1;
+  color: rgb(144 122 169 / var(--tw-text-opacity));
+}
+
 .text-muted {
   --tw-text-opacity: 1;
   color: rgb(152 147 165 / var(--tw-text-opacity));
+}
+
+.text-rose {
+  --tw-text-opacity: 1;
+  color: rgb(215 130 126 / var(--tw-text-opacity));
 }
 
 .accent-highlightMed {
