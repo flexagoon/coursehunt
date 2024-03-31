@@ -1,10 +1,12 @@
-package search
+package providers
 
 import (
 	"encoding/json"
 	"net/http"
 	"net/url"
 	"strconv"
+
+	"fxgn.dev/coursehunt/search"
 )
 
 type Stepik struct{}
@@ -23,7 +25,7 @@ type stepikCourse struct {
 	Certificate string `json:"certificate"`
 }
 
-func (stepik Stepik) Search(query string, filter Filter) ([]Course, error) {
+func (stepik Stepik) Search(query string, filter search.Filter) ([]search.Course, error) {
 	url, err := stepik.buildSearchUrl(query, filter)
 	if err != nil {
 		return nil, err
@@ -50,7 +52,7 @@ func (stepik Stepik) Search(query string, filter Filter) ([]Course, error) {
 	return stepik.fetchCourses(ids)
 }
 
-func (_ Stepik) buildSearchUrl(query string, filter Filter) (string, error) {
+func (_ Stepik) buildSearchUrl(query string, filter search.Filter) (string, error) {
 	url, err := url.Parse("https://stepik.org/api/search-results?order=conversion_rate__none%2Crating__none%2Cquality__none%2Cpaid_weight__none&is_popular=true&page=1")
 	if err != nil {
 		return "", err
@@ -64,17 +66,17 @@ func (_ Stepik) buildSearchUrl(query string, filter Filter) (string, error) {
 		q.Set("is_paid", "false")
 	}
 
-	if filter.Language == LanguageEnglish {
+	if filter.Language == search.LanguageEnglish {
 		q.Set("language", "en")
-	} else if filter.Language == LanguageRussian {
+	} else if filter.Language == search.LanguageRussian {
 		q.Set("language", "ru")
 	}
 
-	if filter.Difficulty == DifficultyBeginner {
+	if filter.Difficulty == search.DifficultyBeginner {
 		q.Set("difficulty[]", "easy")
-	} else if filter.Difficulty == DifficultyIntermediate {
+	} else if filter.Difficulty == search.DifficultyIntermediate {
 		q.Set("difficulty[]", "normal")
-	} else if filter.Difficulty == DifficultyAdvanced {
+	} else if filter.Difficulty == search.DifficultyAdvanced {
 		q.Set("difficulty[]", "hard")
 	}
 
@@ -83,7 +85,7 @@ func (_ Stepik) buildSearchUrl(query string, filter Filter) (string, error) {
 	return url.String(), nil
 }
 
-func (_ Stepik) fetchCourses(ids []int) ([]Course, error) {
+func (_ Stepik) fetchCourses(ids []int) ([]search.Course, error) {
 	url := "https://stepik.org/api/courses?ids[]=" + strconv.Itoa(ids[0])
 	for _, id := range ids[1:] {
 		url += "&ids[]=" + strconv.Itoa(id)
@@ -102,7 +104,7 @@ func (_ Stepik) fetchCourses(ids []int) ([]Course, error) {
 		return nil, err
 	}
 
-	var courses []Course
+	var courses []search.Course
 	for _, course := range response.Results {
 		var price string
 		if course.Price != "" {
@@ -111,12 +113,12 @@ func (_ Stepik) fetchCourses(ids []int) ([]Course, error) {
 			price = "Free"
 		}
 
-		var extras []ExtraParam
+		var extras []search.ExtraParam
 		if course.Certificate != "" {
-			extras = append(extras, Certificate)
+			extras = append(extras, search.Certificate)
 		}
 
-		courses = append(courses, Course{
+		courses = append(courses, search.Course{
 			Name:        course.Title,
 			Url:         course.Url,
 			Description: course.Summary,

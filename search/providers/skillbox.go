@@ -1,4 +1,4 @@
-package search
+package providers
 
 import (
 	"encoding/json"
@@ -7,6 +7,8 @@ import (
 	"net/url"
 	"slices"
 	"strings"
+
+	"fxgn.dev/coursehunt/search"
 )
 
 type Skillbox struct{}
@@ -28,9 +30,9 @@ type skillboxDuration struct {
 	Label string `json:"label"`
 }
 
-func (skillbox Skillbox) Search(query string, filter Filter) ([]Course, error) {
-	if filter.Language == LanguageEnglish || filter.Difficulty == DifficultyIntermediate {
-		return []Course{}, nil
+func (skillbox Skillbox) Search(query string, filter search.Filter) ([]search.Course, error) {
+	if filter.Language == search.LanguageEnglish || filter.Difficulty == search.DifficultyIntermediate {
+		return []search.Course{}, nil
 	}
 
 	coursesUrl, professionsUrl, err := skillbox.buildSearchUrls(query, filter)
@@ -51,7 +53,7 @@ func (skillbox Skillbox) Search(query string, filter Filter) ([]Course, error) {
 	return slices.Concat(courses, professions), nil
 }
 
-func (skillbox Skillbox) buildSearchUrls(query string, filter Filter) (string, string, error) {
+func (skillbox Skillbox) buildSearchUrls(query string, filter search.Filter) (string, string, error) {
 	url, err := url.Parse("https://skillbox.ru/api/v6/ru/sales/skillbox/directions/all/nomenclature/course/search")
 	if err != nil {
 		return "", "", err
@@ -61,9 +63,9 @@ func (skillbox Skillbox) buildSearchUrls(query string, filter Filter) (string, s
 
 	q.Set("search", query)
 
-	if filter.Difficulty == DifficultyBeginner {
+	if filter.Difficulty == search.DifficultyBeginner {
 		q.Set("level", "for novichkov")
-	} else if filter.Difficulty == DifficultyAdvanced {
+	} else if filter.Difficulty == search.DifficultyAdvanced {
 		q.Set("level", "for specialists")
 	}
 
@@ -75,7 +77,7 @@ func (skillbox Skillbox) buildSearchUrls(query string, filter Filter) (string, s
 	return courseUrl, professionUrl, nil
 }
 
-func (_ Skillbox) fetchCourses(url string, filter Filter) ([]Course, error) {
+func (_ Skillbox) fetchCourses(url string, filter search.Filter) ([]search.Course, error) {
 	httpResp, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -89,7 +91,7 @@ func (_ Skillbox) fetchCourses(url string, filter Filter) ([]Course, error) {
 		return nil, err
 	}
 
-	var courses []Course
+	var courses []search.Course
 	for _, course := range response.Data {
 		var price string
 		if course.Terms.MonthlyPayment == 0 {
@@ -100,13 +102,13 @@ func (_ Skillbox) fetchCourses(url string, filter Filter) ([]Course, error) {
 			}
 			price = fmt.Sprint(course.Terms.MonthlyPayment, course.Terms.Currency)
 		}
-		courses = append(courses, Course{
+		courses = append(courses, search.Course{
 			Name:        course.Title,
 			Url:         course.Href,
 			Description: "",
 			Price:       price,
 			Duration:    fmt.Sprint(course.Terms.Duration.Count, " ", course.Terms.Duration.Label),
-			Extra:       []ExtraParam{Certificate},
+			Extra:       []search.ExtraParam{search.Certificate},
 		})
 	}
 

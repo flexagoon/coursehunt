@@ -6,21 +6,22 @@ import (
 	"net/url"
 
 	"fxgn.dev/coursehunt/search"
+	"fxgn.dev/coursehunt/search/providers"
 	"fxgn.dev/coursehunt/views"
 	"github.com/a-h/templ"
 )
 
 func main() {
 	searchProviders := []search.Provider{
-		search.Stepik{},
-		search.Udemy{
+		providers.Stepik{},
+		providers.Udemy{
 			ClientId:     "TNAzpQDvOG5n86nNZsOdHb5TzmZsCvSt7segUL71",
 			ClientSecret: "bFHRmQapiQk5D9oFTNchg8M7bwqgp6xw0o1Kv6yMTaJ5g7IiLGj3sZAaT1IR64WTItkx0ubRjRrQ0eEhSRE96C7VpbMqqC6C7xQuuxjdnuLu4VqqlrSrqvVqyEYxX6Zc",
 		},
-		search.Coursera{},
-		search.Edx{},
-		search.Skillbox{},
-		search.Alison{},
+		providers.Coursera{},
+		providers.Edx{},
+		providers.Skillbox{},
+		providers.Alison{},
 	}
 
 	indexPage := views.IndexPage()

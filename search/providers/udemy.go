@@ -1,9 +1,11 @@
-package search
+package providers
 
 import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+
+	"fxgn.dev/coursehunt/search"
 )
 
 type Udemy struct {
@@ -25,7 +27,7 @@ type udemyInstructor struct {
 	Name string `json:"display_name"`
 }
 
-func (udemy Udemy) Search(query string, filter Filter) ([]Course, error) {
+func (udemy Udemy) Search(query string, filter search.Filter) ([]search.Course, error) {
 	url, err := udemy.buildSearchUrl(query, filter)
 	if err != nil {
 		return nil, err
@@ -50,9 +52,9 @@ func (udemy Udemy) Search(query string, filter Filter) ([]Course, error) {
 		return nil, err
 	}
 
-	var courses []Course
+	var courses []search.Course
 	for _, course := range response.Results {
-		courses = append(courses, Course{
+		courses = append(courses, search.Course{
 			Name:        course.Title,
 			Url:         "https://www.udemy.com" + course.UrlPart,
 			Description: course.Headline,
@@ -60,14 +62,14 @@ func (udemy Udemy) Search(query string, filter Filter) ([]Course, error) {
 			Author:      course.Instructors[0].Name,
 			Duration:    course.Duration,
 			Rating:      course.Rating,
-			Extra:       []ExtraParam{Certificate},
+			Extra:       []search.ExtraParam{search.Certificate},
 		})
 	}
 
 	return courses, nil
 }
 
-func (_ Udemy) buildSearchUrl(query string, filter Filter) (string, error) {
+func (_ Udemy) buildSearchUrl(query string, filter search.Filter) (string, error) {
 	url, err := url.Parse("https://www.udemy.com/api-2.0/courses?fields[course]=title,url,headline,price,visible_instructors,avg_rating,content_info_short&fields[user]=display_name")
 	if err != nil {
 		return "", err
@@ -81,17 +83,17 @@ func (_ Udemy) buildSearchUrl(query string, filter Filter) (string, error) {
 		q.Set("price", "price-free")
 	}
 
-	if filter.Language == LanguageEnglish {
+	if filter.Language == search.LanguageEnglish {
 		q.Set("language", "en")
-	} else if filter.Language == LanguageRussian {
+	} else if filter.Language == search.LanguageRussian {
 		q.Set("language", "ru")
 	}
 
-	if filter.Difficulty == DifficultyBeginner {
+	if filter.Difficulty == search.DifficultyBeginner {
 		q.Set("instructional_level", "beginner")
-	} else if filter.Difficulty == DifficultyIntermediate {
+	} else if filter.Difficulty == search.DifficultyIntermediate {
 		q.Set("instructional_level", "intermediate")
-	} else if filter.Difficulty == DifficultyAdvanced {
+	} else if filter.Difficulty == search.DifficultyAdvanced {
 		q.Set("instructional_level", "expert")
 	}
 

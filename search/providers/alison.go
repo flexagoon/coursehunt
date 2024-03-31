@@ -1,10 +1,12 @@
-package search
+package providers
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
+
+	"fxgn.dev/coursehunt/search"
 )
 
 type Alison struct{}
@@ -16,9 +18,9 @@ type alisonCourse struct {
 	Duration string `json:"avg_duration"`
 }
 
-func (alison Alison) Search(query string, filter Filter) ([]Course, error) {
-	if filter.Language == LanguageRussian {
-		return []Course{}, nil
+func (alison Alison) Search(query string, filter search.Filter) ([]search.Course, error) {
+	if filter.Language == search.LanguageRussian {
+		return []search.Course{}, nil
 	}
 
 	url, err := alison.buildSearchUrl(query, filter)
@@ -39,15 +41,15 @@ func (alison Alison) Search(query string, filter Filter) ([]Course, error) {
 		return nil, err
 	}
 
-	var courses []Course
+	var courses []search.Course
 	for _, course := range response.Result {
-		courses = append(courses, Course{
+		courses = append(courses, search.Course{
 			Name:        course.Name,
 			Url:         "https://alison.com/course/" + course.Slug,
 			Description: course.Headline,
 			Price:       "Free",
 			Duration:    fmt.Sprintf("%s hours", course.Duration),
-			Extra:       []ExtraParam{Certificate},
+			Extra:       []search.ExtraParam{search.Certificate},
 		})
 	}
 
@@ -56,7 +58,7 @@ func (alison Alison) Search(query string, filter Filter) ([]Course, error) {
 
 const alisonBaseUrl = "https://api.alison.com/v0.1/search"
 
-func (alison Alison) buildSearchUrl(query string, filter Filter) (string, error) {
+func (alison Alison) buildSearchUrl(query string, filter search.Filter) (string, error) {
 	url, err := url.Parse(alisonBaseUrl)
 	if err != nil {
 		return "", err
@@ -66,7 +68,7 @@ func (alison Alison) buildSearchUrl(query string, filter Filter) (string, error)
 
 	q.Set("query", query)
 
-	if filter.Difficulty != DifficultyAny {
+	if filter.Difficulty != search.DifficultyAny {
 		q.Set("level", fmt.Sprint(filter.Difficulty))
 	}
 

@@ -1,10 +1,12 @@
-package search
+package providers
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
+
+	"fxgn.dev/coursehunt/search"
 )
 
 type Edx struct{}
@@ -19,9 +21,9 @@ type edxCourse struct {
 	MaxHoursPerWeek int      `json:"max_effort"`
 }
 
-func (edx Edx) Search(query string, filter Filter) ([]Course, error) {
-	if filter.Language == LanguageRussian {
-		return []Course{}, nil
+func (edx Edx) Search(query string, filter search.Filter) ([]search.Course, error) {
+	if filter.Language == search.LanguageRussian {
+		return []search.Course{}, nil
 	}
 
 	url := edx.buildSearchUrl(query, filter)
@@ -39,9 +41,9 @@ func (edx Edx) Search(query string, filter Filter) ([]Course, error) {
 		return nil, err
 	}
 
-	var courses []Course
+	var courses []search.Course
 	for _, course := range response.Hits {
-		courses = append(courses, Course{
+		courses = append(courses, search.Course{
 			Name:        course.Title,
 			Author:      strings.Join(course.Partners, ", "),
 			Url:         course.Url,
@@ -53,7 +55,7 @@ func (edx Edx) Search(query string, filter Filter) ([]Course, error) {
 				course.MaxHoursPerWeek,
 			),
 			Price: "Free, paid certificate",
-			Extra: []ExtraParam{Certificate},
+			Extra: []search.ExtraParam{search.Certificate},
 		})
 	}
 
@@ -62,15 +64,15 @@ func (edx Edx) Search(query string, filter Filter) ([]Course, error) {
 
 const edxBaseUrl = `https://igsyv1z1xi-dsn.algolia.net/1/indexes/product?x-algolia-application-id=IGSYV1Z1XI&x-algolia-api-key=1f72394b5b49fc876026952685f5defe&filters=%s&attributesToRetrieve=["title","marketing_url","primary_description","partner","weeks_to_complete","min_effort","max_effort"]&attributesToHighlight=[]&query=%s`
 
-func (edx Edx) buildSearchUrl(query string, filter Filter) string {
+func (edx Edx) buildSearchUrl(query string, filter search.Filter) string {
 	var filterSb strings.Builder
 	filterSb.WriteString("(product:Course+AND+language:English")
 
-	if filter.Difficulty == DifficultyBeginner {
+	if filter.Difficulty == search.DifficultyBeginner {
 		filterSb.WriteString("+AND+level:Introductory")
-	} else if filter.Difficulty == DifficultyIntermediate {
+	} else if filter.Difficulty == search.DifficultyIntermediate {
 		filterSb.WriteString("+AND+level:Intermediate")
-	} else if filter.Difficulty == DifficultyAdvanced {
+	} else if filter.Difficulty == search.DifficultyAdvanced {
 		filterSb.WriteString("+AND+level:Advanced")
 	}
 

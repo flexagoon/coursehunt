@@ -1,10 +1,12 @@
-package search
+package providers
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
+
+	"fxgn.dev/coursehunt/search"
 )
 
 type Coursera struct{}
@@ -61,7 +63,7 @@ var courseraDurations = map[string]string{
 	"ONE_TO_FOUR_YEARS":    "1-4 years",
 }
 
-func (coursera Coursera) Search(query string, filter Filter) ([]Course, error) {
+func (coursera Coursera) Search(query string, filter search.Filter) ([]search.Course, error) {
 	url := "https://www.coursera.org/graphql-gateway?opname=Search"
 	payload := buildGraphqlPayload(query, filter)
 
@@ -76,7 +78,7 @@ func (coursera Coursera) Search(query string, filter Filter) ([]Course, error) {
 		return nil, err
 	}
 
-	var courses []Course
+	var courses []search.Course
 	for _, course := range response.Data.SearchResult.Search[0].Courses {
 		var price string
 		if course.Free {
@@ -88,12 +90,12 @@ func (coursera Coursera) Search(query string, filter Filter) ([]Course, error) {
 			price = "Subscription required"
 		}
 
-		var extras []ExtraParam
-		if filter.Language == LanguageRussian {
-			extras = append(extras, Translated)
+		var extras []search.ExtraParam
+		if filter.Language == search.LanguageRussian {
+			extras = append(extras, search.Translated)
 		}
 
-		courses = append(courses, Course{
+		courses = append(courses, search.Course{
 			Name:     course.Name,
 			Author:   strings.Join(course.Partners, ", "),
 			Url:      "https://www.coursera.org" + course.Url,
@@ -107,20 +109,20 @@ func (coursera Coursera) Search(query string, filter Filter) ([]Course, error) {
 	return courses, nil
 }
 
-func buildGraphqlPayload(query string, filter Filter) *strings.Reader {
+func buildGraphqlPayload(query string, filter search.Filter) *strings.Reader {
 	filters := []string{}
 
-	if filter.Language == LanguageEnglish {
+	if filter.Language == search.LanguageEnglish {
 		filters = append(filters, "language:English")
-	} else if filter.Language == LanguageRussian {
+	} else if filter.Language == search.LanguageRussian {
 		filters = append(filters, "language:Russian")
 	}
 
-	if filter.Difficulty == DifficultyBeginner {
+	if filter.Difficulty == search.DifficultyBeginner {
 		filters = append(filters, "productDifficultyLevel:Beginner")
-	} else if filter.Difficulty == DifficultyIntermediate {
+	} else if filter.Difficulty == search.DifficultyIntermediate {
 		filters = append(filters, "productDifficultyLevel:Intermediate")
-	} else if filter.Difficulty == DifficultyAdvanced {
+	} else if filter.Difficulty == search.DifficultyAdvanced {
 		filters = append(filters, "productDifficultyLevel:Advanced")
 	}
 
