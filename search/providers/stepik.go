@@ -2,6 +2,7 @@ package providers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -18,6 +19,7 @@ type searchResult struct {
 type stepikCourse struct {
 	// TODO stepik data structure sucks and I need to do extra fetching for
 	// other data
+	Id          int    `json:"id"`
 	Title       string `json:"title"`
 	Url         string `json:"canonical_url"`
 	Summary     string `json:"summary"`
@@ -85,7 +87,7 @@ func (_ Stepik) buildSearchUrl(query string, filter search.Filter) (string, erro
 	return url.String(), nil
 }
 
-func (_ Stepik) fetchCourses(ids []int) ([]search.Course, error) {
+func (stepik Stepik) fetchCourses(ids []int) ([]search.Course, error) {
 	url := "https://stepik.org/api/courses?ids[]=" + strconv.Itoa(ids[0])
 	for _, id := range ids[1:] {
 		url += "&ids[]=" + strconv.Itoa(id)
@@ -123,9 +125,33 @@ func (_ Stepik) fetchCourses(ids []int) ([]search.Course, error) {
 			Url:         course.Url,
 			Description: course.Summary,
 			Price:       price,
+			Rating:      course.fetchRating(),
 			Extra:       extras,
 		})
 	}
 
 	return courses, nil
+}
+
+type stepikRating struct {
+	Rating float64 `json:"average"`
+}
+
+func (course stepikCourse) fetchRating() float64 {
+	url := fmt.Sprintf("https://stepik.org/api/courses?ids[]=%d", course.Id)
+
+	httpResp, err := http.Get(url)
+	if err != nil {
+		return 0
+	}
+
+	response := struct {
+		Result []stepikRating `json:"course-review-summaries"`
+	}{}
+	err = json.NewDecoder(httpResp.Body).Decode(&response)
+	if err != nil {
+		return 0
+	}
+
+	return response.Result[0].Rating
 }
