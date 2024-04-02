@@ -23,7 +23,7 @@ func Page(contents templ.Component) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>CourseHunt</title><script src=\"https://unpkg.com/htmx.org@1.9.4\" integrity=\"sha384-zUfuhFKKZCbHTY6aRR46gxiqszMk5tcHjsVFxnUo8VMus4kHGVdIYVbOYYNlKmHV\" crossorigin=\"anonymous\"></script><script src=\"https://unpkg.com/htmx.org/dist/ext/loading-states.js\"></script><link rel=\"stylesheet\" href=\"/style.css\"></head><body class=\"bg-base text-fg\" hx-ext=\"loading-states\"><div class=\"container mx-auto my-20 max-w-screen-sm\"><header><h1 class=\"text-5xl font-extrabold\"><a href=\"/\">CourseHunt 📚🔍</a></h1><h2 class=\"text-2xl\">Find your knowledge</h2></header><main>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>CourseHunt</title><script src=\"https://unpkg.com/htmx.org@1.9.4\" integrity=\"sha384-zUfuhFKKZCbHTY6aRR46gxiqszMk5tcHjsVFxnUo8VMus4kHGVdIYVbOYYNlKmHV\" crossorigin=\"anonymous\"></script><script src=\"https://unpkg.com/htmx.org/dist/ext/loading-states.js\"></script><link rel=\"stylesheet\" href=\"/style.css\"></head><body class=\"bg-base text-fg\" hx-ext=\"loading-states\"><div class=\"container mx-auto px-10 sm:px-0 my-20 max-w-screen-sm\"><header><h1 class=\"text-5xl font-extrabold\"><a href=\"/\">CourseHunt 📚🔍</a></h1><h2 class=\"text-2xl\">Find your knowledge</h2></header><main>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
