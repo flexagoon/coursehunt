@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"strconv"
+	"strings"
 
 	"fxgn.dev/coursehunt/search"
 )
@@ -54,13 +56,15 @@ func (udemy Udemy) Search(query string, filter search.Filter) ([]search.Course, 
 
 	var courses []search.Course
 	for _, course := range response.Results {
+		duration, _ := strconv.ParseFloat(strings.Split(course.Duration, " ")[0], 64)
+
 		courses = append(courses, search.Course{
 			Name:        course.Title,
 			Url:         "https://www.udemy.com" + course.UrlPart,
 			Description: course.Headline,
 			Price:       course.Price,
 			Author:      course.Instructors[0].Name,
-			Duration:    course.Duration,
+			Hours:       int(duration),
 			Rating:      course.Rating,
 			Extra:       []search.ExtraParam{search.Certificate},
 		})

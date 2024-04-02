@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"regexp"
 	"strings"
 
 	"fxgn.dev/coursehunt/search"
@@ -18,7 +19,6 @@ type edxCourse struct {
 	Description     string   `json:"primary_description"`
 	Weeks           int      `json:"weeks_to_complete"`
 	MinHoursPerWeek int      `json:"min_effort"`
-	MaxHoursPerWeek int      `json:"max_effort"`
 }
 
 func (edx Edx) Search(query string, filter search.Filter) ([]search.Course, error) {
@@ -43,26 +43,25 @@ func (edx Edx) Search(query string, filter search.Filter) ([]search.Course, erro
 
 	var courses []search.Course
 	for _, course := range response.Hits {
+		// Strip html tags from the description
+		tag := regexp.MustCompile("<.[^<>]*>")
+		description := tag.ReplaceAllString(course.Description, "")
+
 		courses = append(courses, search.Course{
 			Name:        course.Title,
 			Author:      strings.Join(course.Partners, ", "),
 			Url:         course.Url,
-			Description: course.Description,
-			Duration: fmt.Sprintf(
-				"%d weeks (%d-%d hours per week)",
-				course.Weeks,
-				course.MinHoursPerWeek,
-				course.MaxHoursPerWeek,
-			),
-			Price: "Free, paid certificate",
-			Extra: []search.ExtraParam{search.Certificate},
+			Description: description,
+			Hours:       course.Weeks * course.MinHoursPerWeek,
+			Price:       "Free, paid certificate",
+			Extra:       []search.ExtraParam{search.Certificate},
 		})
 	}
 
 	return courses, nil
 }
 
-const edxBaseUrl = `https://igsyv1z1xi-dsn.algolia.net/1/indexes/product?x-algolia-application-id=IGSYV1Z1XI&x-algolia-api-key=1f72394b5b49fc876026952685f5defe&filters=%s&attributesToRetrieve=["title","marketing_url","primary_description","partner","weeks_to_complete","min_effort","max_effort"]&attributesToHighlight=[]&query=%s`
+const edxBaseUrl = `https://igsyv1z1xi-dsn.algolia.net/1/indexes/product?x-algolia-application-id=IGSYV1Z1XI&x-algolia-api-key=1f72394b5b49fc876026952685f5defe&filters=%s&attributesToRetrieve=["title","marketing_url","primary_description","partner","weeks_to_complete","min_effort"]&attributesToHighlight=[]&query=%s`
 
 func (edx Edx) buildSearchUrl(query string, filter search.Filter) string {
 	var filterSb strings.Builder

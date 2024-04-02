@@ -10,8 +10,12 @@ import "context"
 import "io"
 import "bytes"
 
-import "fxgn.dev/coursehunt/search"
-import "strconv"
+import (
+	"strconv"
+	"strings"
+
+	"fxgn.dev/coursehunt/search"
+)
 
 func SearchPage(results []search.Course) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
@@ -42,7 +46,7 @@ func SearchPage(results []search.Course) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</details></form>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</details></form><label class=\"block text-xl\">Order by <select name=\"difficulty\" class=\"px-5 py-1 rounded bg-highlightMed\"><option value=\"any\" selected>Relevance ↓</option> <option value=\"beginner\">Beginner</option> <option value=\"intermediate\">Intermediate</option> <option value=\"advanced\">Advanced</option></select></label> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -88,7 +92,7 @@ func searchResult(course search.Course) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(course.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/search_page.templ`, Line: 20, Col: 47}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/search_page.templ`, Line: 33, Col: 47}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -101,7 +105,7 @@ func searchResult(course search.Course) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(course.Price)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/search_page.templ`, Line: 20, Col: 121}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/search_page.templ`, Line: 33, Col: 121}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -125,42 +129,16 @@ func searchResult(course search.Course) templ.Component {
 				}
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<br><span class=\"text-lg\"><i>By ")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<br><span class=\"text-lg\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var6 string
-		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(course.Author)
+		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(tagString(course))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/search_page.templ`, Line: 30, Col: 45}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/search_page.templ`, Line: 43, Col: 43}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</i> |  ")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var7 string
-		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.FormatFloat(course.Rating, 'f', 1, 64))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/search_page.templ`, Line: 30, Col: 103}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" ⭐ | ")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var8 string
-		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(course.Duration)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/search_page.templ`, Line: 30, Col: 129}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -168,12 +146,12 @@ func searchResult(course search.Course) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var9 string
-		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(course.Description)
+		var templ_7745c5c3_Var7 string
+		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(course.Description)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/search_page.templ`, Line: 32, Col: 47}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/search_page.templ`, Line: 45, Col: 47}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -186,4 +164,44 @@ func searchResult(course search.Course) templ.Component {
 		}
 		return templ_7745c5c3_Err
 	})
+}
+
+func tagString(course search.Course) string {
+	var sb strings.Builder
+
+	var prev bool
+
+	if course.Author != "" {
+		sb.WriteString("By ")
+		sb.WriteString(course.Author)
+		prev = true
+	}
+
+	if course.Rating > 0 {
+		if prev {
+			sb.WriteString(" | ")
+		}
+		sb.WriteString(strconv.FormatFloat(course.Rating, 'f', 1, 64))
+		sb.WriteString(" ⭐")
+		prev = true
+	}
+
+	if course.Hours > 0 {
+		if prev {
+			sb.WriteString(" | ")
+		}
+		sb.WriteString(duration(course.Hours))
+	}
+
+	return sb.String()
+}
+
+func duration(hours int) string {
+	if hours >= 1000 {
+		return "📆 " + strconv.Itoa(hours/1000) + " months"
+	} else if hours == 1 {
+		return "📆 1 hour"
+	} else {
+		return "📆 " + strconv.Itoa(hours) + " hours"
+	}
 }

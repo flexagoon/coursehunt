@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
+	"strings"
 
 	"fxgn.dev/coursehunt/search"
 )
@@ -43,12 +45,14 @@ func (alison Alison) Search(query string, filter search.Filter) ([]search.Course
 
 	var courses []search.Course
 	for _, course := range response.Result {
+		hours, _ := strconv.Atoi(strings.Split(course.Duration, "-")[0])
+
 		courses = append(courses, search.Course{
 			Name:        course.Name,
 			Url:         "https://alison.com/course/" + course.Slug,
 			Description: course.Headline,
 			Price:       "Free",
-			Duration:    fmt.Sprintf("%s hours", course.Duration),
+			Hours:       hours,
 			Extra:       []search.ExtraParam{search.Certificate},
 		})
 	}

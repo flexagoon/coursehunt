@@ -17,13 +17,12 @@ type searchResult struct {
 }
 
 type stepikCourse struct {
-	// TODO stepik data structure sucks and I need to do extra fetching for
-	// other data
 	Id          int    `json:"id"`
 	Title       string `json:"title"`
 	Url         string `json:"canonical_url"`
 	Summary     string `json:"summary"`
 	Price       string `json:"price"`
+	Seconds     int    `json:"time_to_complete"`
 	Certificate string `json:"certificate"`
 }
 
@@ -126,6 +125,7 @@ func (stepik Stepik) fetchCourses(ids []int) ([]search.Course, error) {
 			Description: course.Summary,
 			Price:       price,
 			Rating:      course.fetchRating(),
+			Hours:       course.Seconds / 3600,
 			Extra:       extras,
 		})
 	}
@@ -138,7 +138,7 @@ type stepikRating struct {
 }
 
 func (course stepikCourse) fetchRating() float64 {
-	url := fmt.Sprintf("https://stepik.org/api/courses?ids[]=%d", course.Id)
+	url := fmt.Sprintf("https://stepik.org/api/course-review-summaries?ids[]=%d", course.Id)
 
 	httpResp, err := http.Get(url)
 	if err != nil {
@@ -149,7 +149,7 @@ func (course stepikCourse) fetchRating() float64 {
 		Result []stepikRating `json:"course-review-summaries"`
 	}{}
 	err = json.NewDecoder(httpResp.Body).Decode(&response)
-	if err != nil {
+	if err != nil || len(response.Result) == 0 {
 		return 0
 	}
 

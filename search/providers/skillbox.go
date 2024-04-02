@@ -26,8 +26,7 @@ type skillboxTerms struct {
 }
 
 type skillboxDuration struct {
-	Count int    `json:"count"`
-	Label string `json:"label"`
+	Months int `json:"count"`
 }
 
 func (skillbox Skillbox) Search(query string, filter search.Filter) ([]search.Course, error) {
@@ -107,8 +106,9 @@ func (_ Skillbox) fetchCourses(url string, filter search.Filter) ([]search.Cours
 			Url:         course.Href,
 			Description: "",
 			Price:       price,
-			Duration:    fmt.Sprint(course.Terms.Duration.Count, " ", course.Terms.Duration.Label),
-			Extra:       []search.ExtraParam{search.Certificate},
+			// HACK this is awful, sorry. 1000 hours represent a month here.
+			Hours: course.Terms.Duration.Months * 1000,
+			Extra: []search.ExtraParam{search.Certificate},
 		})
 	}
 

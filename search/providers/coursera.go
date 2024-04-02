@@ -48,24 +48,23 @@ type courseraCourse struct {
 	Name     string   `json:"name"`
 	Partners []string `json:"partners"`
 	Url      string   `json:"url"`
-	// TODO description
-	Free     bool    `json:"isCourseFree"`
-	Rating   float64 `json:"avgProductRating"`
-	Duration string  `json:"productDuration"`
+	Free     bool     `json:"isCourseFree"`
+	Rating   float64  `json:"avgProductRating"`
+	Duration string   `json:"productDuration"`
 }
 
-var courseraDurations = map[string]string{
-	"LESS_THAN_TWO_HOURS":  "Less than 2 hours",
-	"ONE_TO_FOUR_WEEKS":    "1-4 weeks",
-	"ONE_TO_THREE_MONTHS":  "1-3 months",
-	"THREE_TO_SIX_MONTHS":  "3-6 months",
-	"SIX_TO_TWELVE_MONTHS": "6-12 months",
-	"ONE_TO_FOUR_YEARS":    "1-4 years",
+var courseraDurations = map[string]int{
+	"LESS_THAN_TWO_HOURS":  2,
+	"ONE_TO_FOUR_WEEKS":    10,
+	"ONE_TO_THREE_MONTHS":  2000,
+	"THREE_TO_SIX_MONTHS":  4000,
+	"SIX_TO_TWELVE_MONTHS": 7000,
+	"ONE_TO_FOUR_YEARS":    24000,
 }
 
 func (coursera Coursera) Search(query string, filter search.Filter) ([]search.Course, error) {
 	url := "https://www.coursera.org/graphql-gateway?opname=Search"
-	payload := buildGraphqlPayload(query, filter)
+	payload := coursera.buildGraphqlPayload(query, filter)
 
 	httpResp, err := http.Post(url, "application/json", payload)
 	if err != nil {
@@ -96,20 +95,20 @@ func (coursera Coursera) Search(query string, filter search.Filter) ([]search.Co
 		}
 
 		courses = append(courses, search.Course{
-			Name:     course.Name,
-			Author:   strings.Join(course.Partners, ", "),
-			Url:      "https://www.coursera.org" + course.Url,
-			Price:    price,
-			Rating:   course.Rating,
-			Duration: courseraDurations[course.Duration],
-			Extra:    extras,
+			Name:   course.Name,
+			Author: strings.Join(course.Partners, ", "),
+			Url:    "https://www.coursera.org" + course.Url,
+			Price:  price,
+			Rating: course.Rating,
+			Hours:  courseraDurations[course.Duration],
+			Extra:  extras,
 		})
 	}
 
 	return courses, nil
 }
 
-func buildGraphqlPayload(query string, filter search.Filter) *strings.Reader {
+func (_ Coursera) buildGraphqlPayload(query string, filter search.Filter) *strings.Reader {
 	filters := []string{}
 
 	if filter.Language == search.LanguageEnglish {

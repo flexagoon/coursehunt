@@ -13,7 +13,7 @@ type Course struct {
 	Description string
 	Price       string
 	Rating      float64
-	Duration    string
+	Hours       int
 	Extra       []ExtraParam
 }
 

@@ -1,7 +1,11 @@
 package views
 
-import "fxgn.dev/coursehunt/search"
-import "strconv"
+import (
+	"strconv"
+	"strings"
+
+	"fxgn.dev/coursehunt/search"
+)
 
 templ SearchPage(results []search.Course) {
 	<form class="my-12" hx-get="/search" hx-push-url="true" hx-target="closest main">
@@ -11,6 +15,15 @@ templ SearchPage(results []search.Course) {
 			@filters()
 		</details>
 	</form>
+	<label class="block text-xl">
+		Order by
+		<select name="difficulty" class="px-5 py-1 rounded bg-highlightMed">
+			<option value="any" selected>Relevance ↓</option>
+			<option value="beginner">Beginner</option>
+			<option value="intermediate">Intermediate</option>
+			<option value="advanced">Advanced</option>
+		</select>
+	</label>
 	for _, course := range results {
 		@searchResult(course)
 	}
@@ -28,8 +41,48 @@ templ searchResult(course search.Course) {
 			}
 		}
 		<br/>
-		<span class="text-lg"><i>By { course.Author }</i> |  { strconv.FormatFloat(course.Rating, 'f', 1, 64) } ⭐ | { course.Duration }</span>
+		<span class="text-lg">{ tagString(course) }</span>
 		<br/>
 		<span class="text-muted">{ course.Description }</span>
 	</a>
+}
+
+func tagString(course search.Course) string {
+	var sb strings.Builder
+
+	var prev bool
+
+	if course.Author != "" {
+		sb.WriteString("By ")
+		sb.WriteString(course.Author)
+		prev = true
+	}
+
+	if course.Rating > 0 {
+		if prev {
+			sb.WriteString(" | ")
+		}
+		sb.WriteString(strconv.FormatFloat(course.Rating, 'f', 1, 64))
+		sb.WriteString(" ⭐")
+		prev = true
+	}
+
+	if course.Hours > 0 {
+		if prev {
+			sb.WriteString(" | ")
+		}
+		sb.WriteString(duration(course.Hours))
+	}
+
+	return sb.String()
+}
+
+func duration(hours int) string {
+	if hours >= 1000 {
+		return "📆 " + strconv.Itoa(hours/1000) + " months"
+	} else if hours == 1 {
+		return "📆 1 hour"
+	} else {
+		return "📆 " + strconv.Itoa(hours) + " hours"
+	}
 }
