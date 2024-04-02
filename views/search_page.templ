@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"fxgn.dev/coursehunt/search"
+	"encoding/json"
 )
 
 templ SearchPage(results []search.Course) {
@@ -17,36 +18,54 @@ templ SearchPage(results []search.Course) {
 	</form>
 	<label class="block text-xl">
 		Order by
-		<select name="difficulty" class="px-5 py-1 rounded bg-highlightMed">
-			<option value="any" selected>Relevance ↓</option>
-			<option value="beginner">Beginner</option>
-			<option value="intermediate">Intermediate</option>
-			<option value="advanced">Advanced</option>
+		<select name="sort" class="px-5 py-1 rounded bg-highlightMed" hx-trigger="change" hx-get="/results" hx-target="#results" hx-vals={ resultsJson(results) }>
+			<option value="default" selected>Relevance ↓</option>
+			<option value="rating">Rating ↓</option>
+			<option value="cheap">Price ↑</option>
+			<option value="expensive">Price ↓</option>
+			<option value="short">Length ↑</option>
+			<option value="long">Length ↓</option>
 		</select>
 	</label>
+	<div id="results">
+		@ResultsList(results)
+	</div>
+}
+
+templ ResultsList(results []search.Course) {
 	for _, course := range results {
 		@searchResult(course)
 	}
 }
 
+func resultsJson(results []search.Course) string {
+	data, _ := json.Marshal(map[string]interface{}{
+		"result[]": results,
+	})
+
+	return string(data)
+}
+
 templ searchResult(course search.Course) {
-	<a class="block my-6 bg-surface rounded-xl border-2 border-highlightHigh p-5 hover:bg-highlightLow" href={ templ.URL(course.Url) }>
-		<span class="text-xl font-bold">{ course.Name }</span> <mark class="bg-foam/20 rounded-lg p-1 text-foam">{ formatPrice(course.Price) }</mark>
-		for _, extra := range course.Extra {
-			switch extra {
-				case search.Translated:
-					<mark class="bg-rose/20 rounded-lg p-1 text-rose">Translated</mark>&nbsp;
-				case search.Certificate:
-					<mark class="bg-iris/20 rounded-lg p-1 text-iris">Certificate</mark>
-				case search.PaidCertificate:
-					<mark class="bg-iris/20 rounded-lg p-1 text-iris">Paid Certificate</mark>
+	if course.Name != "" {
+		<a class="block my-6 bg-surface rounded-xl border-2 border-highlightHigh p-5 hover:bg-highlightLow" href={ templ.URL(course.Url) }>
+			<span class="text-xl font-bold">{ course.Name }</span> <mark class="bg-foam/20 rounded-lg p-1 text-foam">{ formatPrice(course.Price) }</mark>
+			for _, extra := range course.Extra {
+				switch extra {
+					case search.Translated:
+						<mark class="bg-rose/20 rounded-lg p-1 text-rose">Translated</mark>&nbsp;
+					case search.Certificate:
+						<mark class="bg-iris/20 rounded-lg p-1 text-iris">Certificate</mark>
+					case search.PaidCertificate:
+						<mark class="bg-iris/20 rounded-lg p-1 text-iris">Paid Certificate</mark>
+				}
 			}
-		}
-		<br/>
-		<span class="text-lg">{ tagString(course) }</span>
-		<br/>
-		<span class="text-muted">{ course.Description }</span>
-	</a>
+			<br/>
+			<span class="text-lg">{ tagString(course) }</span>
+			<br/>
+			<span class="text-muted">{ course.Description }</span>
+		</a>
+	}
 }
 
 func formatPrice(price float64) string {

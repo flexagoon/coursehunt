@@ -1,5 +1,10 @@
 package search
 
+import (
+	"cmp"
+	"slices"
+)
+
 func zipSources(sources [][]Course) []Course {
 	sourcesCount := len(sources)
 
@@ -20,4 +25,42 @@ func zipSources(sources [][]Course) []Course {
 	}
 
 	return result
+}
+
+func SortCourses(courses []Course, sort string) []Course {
+	if sort == "rating" {
+		slices.SortStableFunc(courses, func(a, b Course) int {
+			return -cmp.Compare(a.Rating, b.Rating)
+		})
+	} else if sort == "cheap" || sort == "expensive" {
+		courses := slices.DeleteFunc(courses, func(result Course) bool {
+			return result.Price == 0
+		})
+
+		if sort == "cheap" {
+			slices.SortStableFunc(courses, func(a, b Course) int {
+				return cmp.Compare(a.Price, b.Price)
+			})
+		} else if sort == "expensive" {
+			slices.SortStableFunc(courses, func(a, b Course) int {
+				return -cmp.Compare(a.Price, b.Price)
+			})
+		}
+	} else if sort == "short" || sort == "long" {
+		courses := slices.DeleteFunc(courses, func(result Course) bool {
+			return result.Hours == 0
+		})
+
+		if sort == "short" {
+			slices.SortStableFunc(courses, func(a, b Course) int {
+				return cmp.Compare(a.Hours, b.Hours)
+			})
+		} else if sort == "long" {
+			slices.SortStableFunc(courses, func(a, b Course) int {
+				return -cmp.Compare(a.Hours, b.Hours)
+			})
+		}
+	}
+
+	return courses
 }

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"context"
+	"encoding/json"
 	"net/http"
 	"net/url"
 
@@ -62,6 +62,23 @@ func main() {
 		serveHtmxPage(r, w, views.SearchPage(results))
 	})
 
+	mux.HandleFunc("/results", func(w http.ResponseWriter, r *http.Request) {
+		sort := r.FormValue("sort")
+		r.ParseForm()
+		resultStrings, _ := r.Form["result[]"]
+
+		results := []search.Course{}
+		for _, resultString := range resultStrings {
+			result := search.Course{}
+			json.Unmarshal([]byte(resultString), &result)
+			results = append(results, result)
+		}
+
+		results = search.SortCourses(results, sort)
+
+		views.ResultsList(results).Render(r.Context(), w)
+	})
+
 	mux.HandleFunc("GET /style.css", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "views/style.css")
 	})
@@ -73,5 +90,5 @@ func serveHtmxPage(r *http.Request, w http.ResponseWriter, component templ.Compo
 	if r.Header.Get("HX-Request") != "true" {
 		component = views.Page(component)
 	}
-	component.Render(context.Background(), w)
+	component.Render(r.Context(), w)
 }
