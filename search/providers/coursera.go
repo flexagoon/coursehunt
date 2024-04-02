@@ -35,7 +35,7 @@ const basePayload = `
       {
         "entityType": "PRODUCTS",
         "query": "%s",
-        "limit": 100,
+        "limit": 25,
         "sortBy": "BEST_MATCH",
         "facetFilters": [ %s ]
       }
