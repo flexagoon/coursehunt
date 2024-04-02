@@ -62,7 +62,7 @@ func main() {
 		serveHtmxPage(r, w, views.SearchPage(results))
 	})
 
-	mux.HandleFunc("/results", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/sort", func(w http.ResponseWriter, r *http.Request) {
 		sort := r.FormValue("sort")
 		r.ParseForm()
 		resultStrings, _ := r.Form["result[]"]

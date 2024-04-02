@@ -47,7 +47,7 @@ func SearchPage(results []search.Course) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</details></form><label class=\"block text-xl\">Order by <select name=\"sort\" class=\"px-5 py-1 rounded bg-highlightMed\" hx-trigger=\"change\" hx-get=\"/results\" hx-target=\"#results\" hx-vals=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</details></form><label class=\"block text-xl\">Order by <select name=\"sort\" class=\"px-5 py-1 rounded bg-highlightMed\" hx-trigger=\"change\" hx-post=\"/sort\" hx-target=\"#results\" hx-vals=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

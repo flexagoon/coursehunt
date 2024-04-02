@@ -18,7 +18,7 @@ templ SearchPage(results []search.Course) {
 	</form>
 	<label class="block text-xl">
 		Order by
-		<select name="sort" class="px-5 py-1 rounded bg-highlightMed" hx-trigger="change" hx-get="/results" hx-target="#results" hx-vals={ resultsJson(results) }>
+		<select name="sort" class="px-5 py-1 rounded bg-highlightMed" hx-trigger="change" hx-post="/sort" hx-target="#results" hx-vals={ resultsJson(results) }>
 			<option value="default" selected>Relevance ↓</option>
 			<option value="rating">Rating ↓</option>
 			<option value="cheap">Price ↑</option>
