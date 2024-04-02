@@ -79,14 +79,14 @@ func (coursera Coursera) Search(query string, filter search.Filter) ([]search.Co
 
 	var courses []search.Course
 	for _, course := range response.Data.SearchResult.Search[0].Courses {
-		var price string
+		var price float64
 		if course.Free {
-			price = "Free"
+			price = 0
 		} else {
 			if filter.Free {
 				continue
 			}
-			price = "Subscription required"
+			price = -1
 		}
 
 		var extras []search.ExtraParam

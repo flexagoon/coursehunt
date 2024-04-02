@@ -53,8 +53,8 @@ func (edx Edx) Search(query string, filter search.Filter) ([]search.Course, erro
 			Url:         course.Url,
 			Description: description,
 			Hours:       course.Weeks * course.MinHoursPerWeek,
-			Price:       "Free, paid certificate",
-			Extra:       []search.ExtraParam{search.Certificate},
+			Price:       0,
+			Extra:       []search.ExtraParam{search.PaidCertificate},
 		})
 	}
 

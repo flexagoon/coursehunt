@@ -31,13 +31,15 @@ templ SearchPage(results []search.Course) {
 
 templ searchResult(course search.Course) {
 	<a class="block my-6 bg-surface rounded-xl border-2 border-highlightHigh p-5 hover:bg-highlightLow" href={ templ.URL(course.Url) }>
-		<span class="text-xl font-bold">{ course.Name }</span> <mark class="bg-foam/20 rounded-lg p-1 text-foam">{ course.Price }</mark>
+		<span class="text-xl font-bold">{ course.Name }</span> <mark class="bg-foam/20 rounded-lg p-1 text-foam">{ formatPrice(course.Price) }</mark>
 		for _, extra := range course.Extra {
 			switch extra {
 				case search.Translated:
 					<mark class="bg-rose/20 rounded-lg p-1 text-rose">Translated</mark>&nbsp;
 				case search.Certificate:
 					<mark class="bg-iris/20 rounded-lg p-1 text-iris">Certificate</mark>
+				case search.PaidCertificate:
+					<mark class="bg-iris/20 rounded-lg p-1 text-iris">Paid Certificate</mark>
 			}
 		}
 		<br/>
@@ -45,6 +47,15 @@ templ searchResult(course search.Course) {
 		<br/>
 		<span class="text-muted">{ course.Description }</span>
 	</a>
+}
+
+func formatPrice(price float64) string {
+	if price == 0 {
+		return "Free"
+	} else if price == -1 {
+		return "Subscription"
+	}
+	return strconv.Itoa(int(price)) + "₽"
 }
 
 func tagString(course search.Course) string {

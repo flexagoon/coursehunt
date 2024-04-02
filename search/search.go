@@ -11,10 +11,15 @@ type Course struct {
 	Author      string
 	Url         string
 	Description string
-	Price       string
 	Rating      float64
-	Hours       int
 	Extra       []ExtraParam
+
+	// 0 - Free
+	// -1 - Subscription
+	Price float64
+
+	// HACK 1000 hours represent a month
+	Hours int
 }
 
 type ExtraParam int
@@ -22,6 +27,7 @@ type ExtraParam int
 const (
 	Translated ExtraParam = iota
 	Certificate
+	PaidCertificate
 )
 
 func Search(query string, filter Filter, providers []Provider) []Course {

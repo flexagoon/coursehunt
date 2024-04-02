@@ -107,11 +107,11 @@ func (stepik Stepik) fetchCourses(ids []int) ([]search.Course, error) {
 
 	var courses []search.Course
 	for _, course := range response.Results {
-		var price string
+		var price float64
 		if course.Price != "" {
-			price = course.Price + "₽"
+			price, _ = strconv.ParseFloat(course.Price, 64)
 		} else {
-			price = "Free"
+			price = 0
 		}
 
 		var extras []search.ExtraParam

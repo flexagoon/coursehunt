@@ -51,7 +51,7 @@ func (alison Alison) Search(query string, filter search.Filter) ([]search.Course
 			Name:        course.Name,
 			Url:         "https://alison.com/course/" + course.Slug,
 			Description: course.Headline,
-			Price:       "Free",
+			Price:       0,
 			Hours:       hours,
 			Extra:       []search.ExtraParam{search.Certificate},
 		})

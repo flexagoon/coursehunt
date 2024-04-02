@@ -2,7 +2,6 @@ package providers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/url"
 	"slices"
@@ -21,7 +20,6 @@ type skillboxCourse struct {
 
 type skillboxTerms struct {
 	MonthlyPayment int              `json:"monthly_payment"`
-	Currency       string           `json:"icon_currency"`
 	Duration       skillboxDuration `json:"duration"`
 }
 
@@ -92,23 +90,22 @@ func (_ Skillbox) fetchCourses(url string, filter search.Filter) ([]search.Cours
 
 	var courses []search.Course
 	for _, course := range response.Data {
-		var price string
+		var price float64
 		if course.Terms.MonthlyPayment == 0 {
-			price = "Free"
+			price = 0
 		} else {
 			if filter.Free {
 				continue
 			}
-			price = fmt.Sprint(course.Terms.MonthlyPayment, course.Terms.Currency)
+			price = float64(course.Terms.Duration.Months * course.Terms.MonthlyPayment)
 		}
 		courses = append(courses, search.Course{
 			Name:        course.Title,
 			Url:         course.Href,
 			Description: "",
 			Price:       price,
-			// HACK this is awful, sorry. 1000 hours represent a month here.
-			Hours: course.Terms.Duration.Months * 1000,
-			Extra: []search.ExtraParam{search.Certificate},
+			Hours:       course.Terms.Duration.Months * 1000,
+			Extra:       []search.ExtraParam{search.Certificate},
 		})
 	}
 

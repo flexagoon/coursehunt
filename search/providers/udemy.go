@@ -58,11 +58,16 @@ func (udemy Udemy) Search(query string, filter search.Filter) ([]search.Course, 
 	for _, course := range response.Results {
 		duration, _ := strconv.ParseFloat(strings.Split(course.Duration, " ")[0], 64)
 
+		price, _ := strconv.ParseFloat(course.Price[1:], 64)
+
+		// HACK € -> ₽
+		price *= 100
+
 		courses = append(courses, search.Course{
 			Name:        course.Title,
 			Url:         "https://www.udemy.com" + course.UrlPart,
 			Description: course.Headline,
-			Price:       course.Price,
+			Price:       price,
 			Author:      course.Instructors[0].Name,
 			Hours:       int(duration),
 			Rating:      course.Rating,
