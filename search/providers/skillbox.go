@@ -13,14 +13,14 @@ import (
 type Skillbox struct{}
 
 type skillboxCourse struct {
-	Title string        `json:"title"`
-	Href  string        `json:"href"`
-	Terms skillboxTerms `json:"terms"`
+	Title    string           `json:"title"`
+	Href     string           `json:"href"`
+	Terms    skillboxTerms    `json:"terms"`
+	Duration skillboxDuration `json:"duration"`
 }
 
 type skillboxTerms struct {
-	MonthlyPayment int              `json:"monthly_payment"`
-	Duration       skillboxDuration `json:"duration"`
+	MonthlyPayment int `json:"monthly_payment"`
 }
 
 type skillboxDuration struct {
@@ -97,14 +97,15 @@ func (_ Skillbox) fetchCourses(url string, filter search.Filter) ([]search.Cours
 			if filter.Free {
 				continue
 			}
-			price = float64(course.Terms.Duration.Months * course.Terms.MonthlyPayment)
+			price = float64(course.Duration.Months * course.Terms.MonthlyPayment)
 		}
+
 		courses = append(courses, search.Course{
 			Name:        course.Title,
 			Url:         course.Href,
-			Description: "",
+			Description: "Обучение с сайта Skillbox.",
 			Price:       price,
-			Hours:       course.Terms.Duration.Months * 1000,
+			Hours:       course.Duration.Months * 1000,
 			Extra:       []search.ExtraParam{search.Certificate},
 		})
 	}
