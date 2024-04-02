@@ -83,7 +83,7 @@ func main() {
 		http.ServeFile(w, r, "views/style.css")
 	})
 
-	http.ListenAndServe(":1641", mux)
+	http.ListenAndServe(":8080", mux)
 }
 
 func serveHtmxPage(r *http.Request, w http.ResponseWriter, component templ.Component) {
